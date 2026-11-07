@@ -29,6 +29,7 @@
     <symbol id="i-return" viewBox="0 0 24 24"><path d="M8.5 6.5 4.5 10.5l4 4"/><path d="M4.5 10.5H15a4.5 4.5 0 0 1 0 9h-3"/></symbol>
     <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3.5c.6 3.9 2.3 6 6.5 6.8-4.2.8-5.9 2.9-6.5 6.8-.6-3.9-2.3-6-6.5-6.8 4.2-.8 5.9-2.9 6.5-6.8z"/><path d="M18.5 15.5c.2 1.5.9 2.2 2.3 2.5-1.4.3-2.1 1-2.3 2.5-.2-1.5-.9-2.2-2.3-2.5 1.4-.3 2.1-1 2.3-2.5z"/></symbol>
     <symbol id="i-verified" viewBox="0 0 24 24"><circle cx="12" cy="10" r="5.5"/><path d="m9.7 10 1.6 1.6 3-3.2M8.6 14.6l-1.1 6 4.5-2.3 4.5 2.3-1.1-6"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7.5v5.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><circle cx="12" cy="16.2" r="1.3" fill="currentColor"/></symbol>
     <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
   </defs>
@@ -86,21 +87,36 @@
           </ul>
         </div>
 
-        <figure class="card track reveal" style="--d:2" aria-label="Exemplu de donație urmărită pas cu pas">
-          <div class="track-head">
-            <div><span class="label">Donația ta</span><div class="amt">200&nbsp;€</div></div>
-            <span class="pill ok">100 de pachete de Crăciun</span>
+        <figure class="hero-fig reveal" style="--d:2">
+          <div class="card track">
+            <div class="track-org">
+              <span class="org-av" aria-hidden="true">CC</span>
+              <span class="org-t"><b>100 de pachete de Crăciun</b>Fundația Casa Copiilor</span>
+              <span class="pill ok"><svg aria-hidden="true"><use href="#i-check"/></svg>Finalizată</span>
+            </div>
+            <div class="track-amt">
+              <span class="label">Donația ta · 2 decembrie</span>
+              <span class="amt">200&nbsp;€</span>
+            </div>
+            <div class="split-out">
+              <div class="seg-bar" aria-hidden="true"><i></i><b></b></div>
+              <ul class="split-rows">
+                <li><i class="o-sw blue" aria-hidden="true"></i><span class="t"><b>Magazin local</b>100 de ciocolate, plătite la livrare</span><span class="mono">170&nbsp;€</span></li>
+                <li><i class="o-sw sun" aria-hidden="true"></i><span class="t"><b>Rămân în cauză</b>merg la jucării</span><span class="mono">30&nbsp;€</span></li>
+              </ul>
+            </div>
+            <ol class="steps" aria-label="Traseul banilor">
+              <li><b>Blocați</b>2 dec</li>
+              <li><b>Ofertă</b>6 dec</li>
+              <li><b>Livrat</b>15 dec</li>
+              <li><b>Plătit</b>15 dec</li>
+            </ol>
           </div>
-          <ol class="timeline">
-            <li class="done"><span class="dot" aria-hidden="true"><svg><use href="#i-check"/></svg></span><span class="t"><strong>Bani blocați</strong><span>Rămân în portofelul tău până la livrare</span></span><span class="d">2 dec</span></li>
-            <li class="done"><span class="dot" aria-hidden="true"><svg><use href="#i-check"/></svg></span><span class="t"><strong>Ofertă aleasă</strong><span>Magazin local, 170&nbsp;€ pentru 100 de ciocolate</span></span><span class="d">6 dec</span></li>
-            <li class="done"><span class="dot" aria-hidden="true"><svg><use href="#i-check"/></svg></span><span class="t"><strong>Livrat la ONG</strong><span>Confirmat de furnizor și de ONG, cu poze</span></span><span class="d">15 dec</span></li>
-            <li class="done"><span class="dot" aria-hidden="true"><svg><use href="#i-check"/></svg></span><span class="t"><strong>Plătit furnizorului</strong><span>170&nbsp;€. Restul de 30&nbsp;€ merge la jucării</span></span><span class="d">15 dec</span></li>
-          </ol>
-          <div class="split-mini">
-            <div class="bar" aria-hidden="true"><i></i><b></b></div>
-            <div class="row"><span><span class="mono">170&nbsp;€</span>&nbsp;la furnizor</span><span><span class="mono">30&nbsp;€</span>&nbsp;rămân în cauză</span></div>
+          <div class="card proof">
+            <span class="ph"><img src="assets/causes/craciun.jpg" alt="" width="96" height="96" decoding="async"><span class="ck" aria-hidden="true"><svg><use href="#i-check"/></svg></span></span>
+            <span><b>Livrare confirmată</b>3 poze de la ONG · 15 dec</span>
           </div>
+          <figcaption class="sr-only">Exemplu de donație urmărită: 200 € pentru 100 de pachete de Crăciun. 170 € au mers la un magazin local după livrare, iar 30 € au rămas în cauză.</figcaption>
         </figure>
       </div>
     </div>
@@ -141,36 +157,47 @@
   <!-- EXEMPLU -->
   <section class="section" id="exemplu" aria-labelledby="h-ex">
     <div class="wrap">
-      <div class="section-head reveal">
-        <p class="eyebrow">Un exemplu</p>
-        <h2 id="h-ex" class="title-lg">Ce se întâmplă <em>cu 200&nbsp;€</em></h2>
-        <p class="lead">Un ONG pregătește 100 de pachete de Crăciun. Donezi 200&nbsp;€, iar suma acoperă complet ciocolatele, așa că licitația pornește imediat.</p>
-      </div>
-      <div class="card example reveal" style="--d:1">
-        <div class="split" role="img" aria-label="Din 200 de euro, 170 au mers la furnizor și 30 au rămas pentru jucării">
-          <div class="paid"><span class="mono">170&nbsp;€</span>&nbsp;la furnizor</div>
-          <div class="left"><span class="mono">30&nbsp;€</span></div>
+      <div class="head-row reveal">
+        <div class="section-head">
+          <p class="eyebrow">Un exemplu</p>
+          <h2 id="h-ex" class="title-lg">Ce se întâmplă <em>cu 200&nbsp;€</em></h2>
         </div>
-        <div class="split-2 top">
-          <div style="display:grid;gap:1.25rem">
-            <p class="label">Unde au ajuns banii</p>
-            <ul class="legend">
-              <li><span class="mono">170&nbsp;€</span><span>100 de ciocolate de la un magazin local, livrate pe 15 decembrie</span></li>
-              <li><span class="mono">30&nbsp;€</span><span>rămân în aceeași cauză și merg la jucării, cum ai ales la donație</span></li>
-              <li><span class="mono">40&nbsp;€</span><span>reducerea oferită de magazin față de prețul obișnuit, trecută în raport</span></li>
-            </ul>
-            <p class="callout"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-spark"/></svg><span><b>De ce nu cea mai ieftină ofertă?</b> Ciocolatele de 155&nbsp;€ expirau pe 10 decembrie, înainte de distribuirea din 20 decembrie. <span class="nb">AI-ul</span> a explicat asta, iar <span class="nb">ONG-ul</span> a aprobat alegerea.</span></p>
-          </div>
-          <div style="display:grid;gap:1.25rem">
-            <p class="label">Ofertele primite</p>
-            <div class="bids">
-              <div class="bid"><span class="name">Magazin local</span><span class="pill ok">Ales · <span class="mono">170&nbsp;€</span></span><span class="why-t">La 8 km, livrează pe 15 decembrie, 19% sub prețul obișnuit.</span></div>
-              <div class="bid"><span class="name">Lanț național</span><span class="pill mid"><span class="mono">180&nbsp;€</span></span><span class="why-t">Produse bune, dar mai scumpe și livrate de la 320 km.</span></div>
-              <div class="bid"><span class="name">Distribuitor</span><span class="pill no">Respinsă · <span class="mono">155&nbsp;€</span></span><span class="why-t">Cea mai ieftină, dar ciocolatele expiră înainte de distribuire.</span></div>
-            </div>
-          </div>
-        </div>
+        <p class="lead">Un ONG pregătește 100 de pachete de Crăciun. Donezi 200&nbsp;€, suma acoperă ciocolatele și licitația pornește imediat. În patru zile vin trei oferte.</p>
       </div>
+
+      <div class="card offer-card reveal" style="--d:1">
+        <div class="offers-head">
+          <div>
+            <p class="label">Licitație închisă pe 6 decembrie</p>
+            <h3 class="title-md">100 de ciocolate cu lapte, 100&nbsp;g</h3>
+          </div>
+          <dl class="offers-meta">
+            <div><dt>Buget blocat</dt><dd class="mono">200&nbsp;€</dd></div>
+            <div><dt>Preț obișnuit</dt><dd class="mono">210&nbsp;€</dd></div>
+            <div><dt>Oferte</dt><dd class="mono">3</dd></div>
+          </dl>
+        </div>
+        <div class="table-scroll" role="region" aria-labelledby="offers-cap" data-scroll>
+          <table class="compare" role="table">
+            <caption id="offers-cap" class="sr-only">Cele trei oferte primite, ordonate după preț</caption>
+            <thead role="rowgroup">
+              <tr role="row"><th scope="col" role="columnheader">Ofertă</th><th scope="col" role="columnheader">Preț</th><th scope="col" role="columnheader">Sub prețul obișnuit</th><th scope="col" role="columnheader">Distanță</th><th scope="col" role="columnheader">Livrare</th><th scope="col" role="columnheader">Expiră</th></tr>
+            </thead>
+            <tbody role="rowgroup">
+              <tr role="row"><th scope="row" role="rowheader"><span class="o-name">Distribuitor</span><span class="pill no"><svg aria-hidden="true"><use href="#i-close"/></svg>Respinsă</span></th><td role="cell" class="price mono" data-label="Preț">155&nbsp;€</td><td role="cell" class="mono" data-label="Sub prețul obișnuit">26%</td><td role="cell" class="mono" data-label="Distanță">140&nbsp;km</td><td role="cell" data-label="Livrare">12 dec</td><td role="cell" data-label="Expiră" class="bad"><span><svg aria-hidden="true"><use href="#i-alert"/></svg>10 dec</span><small>înainte de împărțire, pe 20 dec</small></td></tr>
+              <tr role="row" class="win"><th scope="row" role="rowheader"><span class="o-name">Magazin local</span><span class="pill ok"><svg aria-hidden="true"><use href="#i-check"/></svg>Aleasă de ONG</span></th><td role="cell" class="price mono" data-label="Preț">170&nbsp;€</td><td role="cell" class="mono" data-label="Sub prețul obișnuit">19%</td><td role="cell" class="mono" data-label="Distanță">8&nbsp;km</td><td role="cell" data-label="Livrare">15 dec</td><td role="cell" data-label="Expiră">martie 2027</td></tr>
+              <tr role="row"><th scope="row" role="rowheader"><span class="o-name">Lanț național</span><span class="pill mid">Nealeasă</span></th><td role="cell" class="price mono" data-label="Preț">180&nbsp;€</td><td role="cell" class="mono" data-label="Sub prețul obișnuit">14%</td><td role="cell" class="mono" data-label="Distanță">320&nbsp;km</td><td role="cell" data-label="Livrare">18 dec</td><td role="cell" data-label="Expiră">aprilie 2027</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="callout ic"><svg aria-hidden="true"><use href="#i-spark"/></svg><span><b>De ce nu cea mai ieftină ofertă?</b> Ciocolatele de 155&nbsp;€ expiră pe 10 decembrie, iar pachetele se împart pe 20. <span class="nb">AI-ul</span> a recomandat magazinul local și a explicat de ce. <span class="nb">ONG-ul</span> a aprobat.</span></p>
+      </div>
+
+      <ul class="outcome" aria-label="Unde au ajuns cei 200 €">
+        <li class="reveal"><span class="o-num"><i class="o-sw blue" aria-hidden="true"></i>170&nbsp;€</span><p><b>plătiți magazinului</b>abia după ce <span class="nb">ONG-ul</span> a confirmat livrarea</p></li>
+        <li class="reveal" style="--d:1"><span class="o-num"><i class="o-sw sun" aria-hidden="true"></i>30&nbsp;€</span><p><b>rămân în cauză</b>și merg la jucării, cum ai ales la donație</p></li>
+        <li class="reveal" style="--d:2"><span class="o-num"><i class="o-sw line" aria-hidden="true"></i>40&nbsp;€</span><p><b>sub prețul obișnuit</b>reducerea apare în raportul tău</p></li>
+      </ul>
     </div>
   </section>
 
@@ -220,47 +247,94 @@
 
   <!-- DONAȚIE LUNARĂ -->
   <section class="section" id="lunar" aria-labelledby="h-lunar">
-    <div class="wrap split-2">
-      <div class="section-head reveal">
-        <p class="eyebrow">Donație lunară</p>
-        <h2 id="h-lunar" class="title-lg">Pentru nevoi care nu se opresc <em>după sărbători</em></h2>
-        <p class="lead">O cantină socială gătește 60 de prânzuri pe zi pentru vârstnici singuri. Are nevoie de aproximativ 1.500&nbsp;€ pe lună, dar donațiile vin mai ales în decembrie.</p>
-        <p class="lead">Cu o donație lunară, cantina știe dinainte pe ce bani se bazează. Pentru că cererea e previzibilă, platforma negociază livrări pe trei luni, la un preț mai bun.</p>
-      </div>
-      <div class="card monthly-card reveal" style="--d:1" role="group" aria-label="Exemplu de donație lunară">
-        <div class="sub-row"><span class="label">Donația ta lunară</span><span class="pill ok">a&nbsp;4-a lună la rând</span></div>
-        <div class="sub-row"><span class="sub-amt">50&nbsp;€</span><span class="muted">≈ 60 de prânzuri calde pe lună</span></div>
-        <div style="display:grid;gap:.625rem">
-          <div class="sub-row small"><span class="muted">Cât acoperă donatorii lunari în decembrie</span><span class="mono" style="font-weight:550">87%</span></div>
-          <div class="meter" role="img" aria-label="87% acoperit"><i style="width:87%"></i></div>
+    <div class="wrap">
+      <div class="panel monthly">
+        <div class="monthly-top">
+          <div class="section-head reveal">
+            <p class="eyebrow">Donație lunară</p>
+            <h2 id="h-lunar" class="title-lg">Pentru nevoi care nu se opresc <em>după sărbători</em></h2>
+            <p class="lead">O cantină socială gătește 60 de prânzuri pe zi pentru vârstnici singuri și are nevoie de 1.500&nbsp;€ pe lună. După sărbători, donațiile ocazionale scad de 13 ori. Donatorii lunari acoperă acum 87% din nevoie, iar cantina poate negocia livrări pe trei luni, la un preț mai bun.</p>
+          </div>
+          <ul class="my-sub reveal" style="--d:1" aria-label="Exemplu: donația ta lunară">
+            <li class="tile"><span class="label">Donația ta</span><span class="v"><span class="mono">50&nbsp;€</span> pe lună</span><span class="s">a 4-a lună la rând</span></li>
+            <li class="tile"><span class="label">Ajunge la</span><span class="v">≈ 60 de prânzuri</span><span class="s">calde, în fiecare lună</span></li>
+            <li class="tile"><span class="label">Pe 1 decembrie</span><span class="v"><svg aria-hidden="true"><use href="#i-lock"/></svg>se blochează <span class="mono">50&nbsp;€</span></span><span class="s">pentru legume și orez · poți pune pauză oricând</span></li>
+          </ul>
         </div>
-        <p class="callout sun"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-lock"/></svg><span>Pe 1 decembrie se blochează 50&nbsp;€ pentru legume și orez. Poți pune pauză luna aceasta sau oricând.</span></p>
+
+        <figure class="card chart reveal" style="--d:2" aria-labelledby="chart-t">
+          <div class="chart-head">
+            <div><h3 id="chart-t">Banii cantinei, lună de lună</h3><p class="muted">decembrie 2025 – noiembrie 2026, în euro</p></div>
+            <ul class="chart-legend" aria-label="Legendă">
+              <li><i class="k-sub" aria-hidden="true"></i>Donatori lunari</li>
+              <li><i class="k-one" aria-hidden="true"></i>Donații ocazionale</li>
+              <li><i class="k-need" aria-hidden="true"></i>Nevoia lunară, 1.500&nbsp;€</li>
+            </ul>
+          </div>
+          <div class="plot" data-plot hidden></div>
+          <details class="chart-data">
+            <summary>Vezi cifrele lunare</summary>
+            <div class="table-scroll" role="region" aria-labelledby="chart-cap" data-scroll>
+              <table class="data-table" data-chart-src>
+                <caption id="chart-cap" class="sr-only">Banii cantinei pe fiecare lună, în euro</caption>
+                <thead><tr><th scope="col">Luna</th><th scope="col">Donatori lunari</th><th scope="col">Donații ocazionale</th><th scope="col">Total</th></tr></thead>
+                <tbody>
+                  <tr data-m="dec" data-a="600" data-b="2400"><th scope="row">Decembrie 2025</th><td>600</td><td>2.400</td><td>3.000</td></tr>
+                  <tr data-m="ian" data-a="650" data-b="180"><th scope="row">Ianuarie 2026</th><td>650</td><td>180</td><td>830</td></tr>
+                  <tr data-m="feb" data-a="700" data-b="90"><th scope="row">Februarie 2026</th><td>700</td><td>90</td><td>790</td></tr>
+                  <tr data-m="mar" data-a="750" data-b="120"><th scope="row">Martie 2026</th><td>750</td><td>120</td><td>870</td></tr>
+                  <tr data-m="apr" data-a="800" data-b="380"><th scope="row">Aprilie 2026</th><td>800</td><td>380</td><td>1.180</td></tr>
+                  <tr data-m="mai" data-a="900" data-b="110"><th scope="row">Mai 2026</th><td>900</td><td>110</td><td>1.010</td></tr>
+                  <tr data-m="iun" data-a="950" data-b="70"><th scope="row">Iunie 2026</th><td>950</td><td>70</td><td>1.020</td></tr>
+                  <tr data-m="iul" data-a="1000" data-b="60"><th scope="row">Iulie 2026</th><td>1.000</td><td>60</td><td>1.060</td></tr>
+                  <tr data-m="aug" data-a="1100" data-b="80"><th scope="row">August 2026</th><td>1.100</td><td>80</td><td>1.180</td></tr>
+                  <tr data-m="sep" data-a="1150" data-b="150"><th scope="row">Septembrie 2026</th><td>1.150</td><td>150</td><td>1.300</td></tr>
+                  <tr data-m="oct" data-a="1250" data-b="160"><th scope="row">Octombrie 2026</th><td>1.250</td><td>160</td><td>1.410</td></tr>
+                  <tr data-m="nov" data-a="1300" data-b="140"><th scope="row">Noiembrie 2026</th><td>1.300</td><td>140</td><td>1.440</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </details>
+        </figure>
       </div>
     </div>
   </section>
 
   <!-- CLASAMENTE -->
-  <section class="section" aria-labelledby="h-game">
-    <div class="wrap split-2 top">
-      <div class="reveal">
-        <div class="section-head" style="margin-bottom:0">
-          <p class="eyebrow">Clasamente</p>
-          <h2 id="h-game" class="title-lg">Contează cât de mult ajuți, <em>nu doar cât dai</em></h2>
-          <p class="lead">Primești puncte când donația ta completează o nevoie, când donezi lunar fără pauză și când susții cauze diferite. Așa și donațiile mici urcă în clasament.</p>
-        </div>
-        <ul class="badges" aria-label="Exemple de insigne">
-          <li>Prima donație</li><li>Ai completat o nevoie</li><li>3 luni la rând</li><li>5 cauze diferite</li>
-        </ul>
-        <p class="note" style="margin-top:1.25rem">Apari în clasament doar dacă vrei, cu un pseudonim, iar sumele pot rămâne ascunse.</p>
+  <section class="section" id="clasament" aria-labelledby="h-game">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <p class="eyebrow">Clasamente</p>
+        <h2 id="h-game" class="title-lg">Contează cât de mult ajuți, <em>nu doar cât dai</em></h2>
+        <p class="lead">Punctele vin din ce schimbă donația ta, nu doar din sumă. Așa urcă în clasament și donațiile mici.</p>
       </div>
-      <div class="reveal" style="--d:1;display:grid;gap:.875rem">
-        <p class="label" id="board-t">Clasamentul lunii</p>
-        <ol class="card board" aria-labelledby="board-t">
-          <li><span class="pos">1</span><span class="av" aria-hidden="true">AP</span><span class="nm">Ana P.<small>7 nevoi completate</small></span><span class="mono pts">142 p</span></li>
-          <li class="me"><span class="pos">2</span><span class="av" aria-hidden="true">Tu</span><span class="nm">Tu<small>ai completat ciocolatele azi</small></span><span class="mono pts">118 p</span></li>
-          <li><span class="pos">3</span><span class="av" aria-hidden="true">MD</span><span class="nm">Mihai D.<small>11 luni de donații lunare</small></span><span class="mono pts">103 p</span></li>
-          <li><span class="pos">4</span><span class="av" aria-hidden="true">BC</span><span class="nm">Echipa Birou Cluj<small>12 colegi</small></span><span class="mono pts">97 p</span></li>
-        </ol>
+      <div class="game">
+        <div class="card board-card reveal">
+          <div class="board-head"><h3 id="board-t">Clasamentul lunii</h3><span class="pill mid">noiembrie 2026</span></div>
+          <ol class="board" aria-labelledby="board-t">
+            <li><span class="pos">1</span><span class="av" aria-hidden="true">AP</span><span class="nm">Ana P.<small>7 nevoi completate</small><span class="bar" aria-hidden="true" style="width:100%"></span></span><span class="mono pts">142 p</span></li>
+            <li class="me"><span class="pos">2</span><span class="av" aria-hidden="true">Tu</span><span class="nm">Tu<small>ai completat ciocolatele azi</small><span class="bar" aria-hidden="true" style="width:83%"></span></span><span class="mono pts">118 p</span></li>
+            <li><span class="pos">3</span><span class="av" aria-hidden="true">MD</span><span class="nm">Mihai D.<small>11 luni de donații lunare</small><span class="bar" aria-hidden="true" style="width:72.5%"></span></span><span class="mono pts">103 p</span></li>
+            <li><span class="pos">4</span><span class="av" aria-hidden="true">BC</span><span class="nm">Echipa Birou Cluj<small>12 colegi</small><span class="bar" aria-hidden="true" style="width:68.3%"></span></span><span class="mono pts">97 p</span></li>
+          </ol>
+          <p class="note">Apari în clasament doar dacă vrei, cu un pseudonim. Sumele pot rămâne ascunse.</p>
+        </div>
+        <div class="card rules-card reveal" style="--d:1">
+          <h3>Cum primești puncte</h3>
+          <ul class="pts-rules">
+            <li><span class="mono">+10&nbsp;p</span><span><b>Completezi o nevoie</b>donația ta e cea care închide suma</span></li>
+            <li><span class="mono">+5&nbsp;p</span><span><b>Încă o lună de donație lunară</b>pentru fiecare lună fără pauză</span></li>
+            <li><span class="mono">+5&nbsp;p</span><span><b>Donezi 25&nbsp;€</b>suma contează tot mai puțin: 100&nbsp;€ aduc 10&nbsp;p, nu 20</span></li>
+            <li><span class="mono">+3&nbsp;p</span><span><b>Susții o cauză nouă</b>prima ta donație pentru un ONG</span></li>
+          </ul>
+          <h4 class="label">Insignele tale</h4>
+          <ul class="medals">
+            <li><span class="md" aria-hidden="true"><svg><use href="#i-heart"/></svg></span>Prima donație</li>
+            <li><span class="md" aria-hidden="true"><svg><use href="#i-check"/></svg></span>Ai completat o nevoie</li>
+            <li><span class="md" aria-hidden="true"><svg><use href="#i-spark"/></svg></span>3 luni la rând</li>
+            <li class="locked"><span class="md" aria-hidden="true"><svg><use href="#i-lock"/></svg></span>5 cauze diferite<small><span class="sr-only">Încă neobținută: </span>3 din 5</small></li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
@@ -273,11 +347,11 @@
         <h2 id="h-trust" class="title-lg">Nu trebuie să ai încredere în nimeni. <em>Poți verifica.</em></h2>
         <p class="lead">Regulile sunt aceleași pentru toți și le vezi înainte să donezi.</p>
       </div>
-      <ul class="grid-2">
-        <li class="card feature reveal"><div class="top"><span class="ibox" aria-hidden="true"><svg><use href="#i-lock"/></svg></span></div><h3>Banii nu pleacă fără dovadă</h3><p>Euro digital rămâne blocat printr-o plată condiționată pe care o pornești tu. Se eliberează doar când furnizorul și <span class="nb">ONG-ul</span> confirmă livrarea.</p></li>
-        <li class="card feature reveal" style="--d:1"><div class="top"><span class="ibox" aria-hidden="true"><svg><use href="#i-return"/></svg></span></div><h3>Dacă ceva nu merge, banii se întorc</h3><p>Nu se strânge suma, nu vine nicio ofertă bună sau furnizorul nu livrează: banii rămân blocați, apoi se întorc la tine sau îi muți unde alegi.</p></li>
-        <li class="card feature reveal" style="--d:2"><div class="top"><span class="ibox" aria-hidden="true"><svg><use href="#i-spark"/></svg></span></div><h3><span class="nb">AI-ul</span> recomandă, oamenii decid</h3><p>Fiecare recomandare are un buton „De ce?”. <span class="nb">ONG-ul</span> aprobă lista de produse și oferta. <span class="nb">AI-ul</span> nu poate muta bani.</p></li>
-        <li class="card feature reveal" style="--d:3"><div class="top"><span class="ibox" aria-hidden="true"><svg><use href="#i-verified"/></svg></span></div><h3>Organizații verificate</h3><p><span class="nb">ONG-urile</span> și furnizorii sunt verificați în registrele oficiale înainte să primească prima comandă.</p></li>
+      <ul class="trust">
+        <li class="reveal"><div class="top"><span class="ibox" aria-hidden="true"><svg><use href="#i-lock"/></svg></span></div><h3>Banii nu pleacă fără dovadă</h3><p>Euro digital rămâne blocat printr-o plată condiționată pe care o pornești tu. Se eliberează doar când furnizorul și <span class="nb">ONG-ul</span> confirmă livrarea.</p></li>
+        <li class="reveal" style="--d:1"><div class="top"><span class="ibox" aria-hidden="true"><svg><use href="#i-return"/></svg></span></div><h3>Dacă ceva nu merge, banii se întorc</h3><p>Nu se strânge suma, nu vine nicio ofertă bună sau furnizorul nu livrează: banii rămân blocați, apoi se întorc la tine sau îi muți unde alegi.</p></li>
+        <li class="reveal" style="--d:2"><div class="top"><span class="ibox" aria-hidden="true"><svg><use href="#i-spark"/></svg></span></div><h3><span class="nb">AI-ul</span> recomandă, oamenii decid</h3><p>Fiecare recomandare are un buton „De ce?”. <span class="nb">ONG-ul</span> aprobă lista de produse și oferta. <span class="nb">AI-ul</span> nu poate muta bani.</p></li>
+        <li class="reveal" style="--d:3"><div class="top"><span class="ibox" aria-hidden="true"><svg><use href="#i-verified"/></svg></span></div><h3>Organizații verificate</h3><p><span class="nb">ONG-urile</span> și furnizorii sunt verificați în registrele oficiale înainte să primească prima comandă.</p></li>
       </ul>
     </div>
   </section>
@@ -350,6 +424,72 @@
   if ('IntersectionObserver' in window) {
     const spy = new IntersectionObserver(es => { for (const e of es) if (e.isIntersecting) mark(e.target.id); }, { rootMargin: '-45% 0px -50% 0px' });
     document.querySelectorAll('main section[id]').forEach(s => spy.observe(s));
+  }
+
+  // tabelele late primesc focus doar când chiar se derulează (ca să poată fi citite și din tastatură)
+  const scrollers = [...document.querySelectorAll('[data-scroll]')];
+  const fitScroll = () => scrollers.forEach(el => el.scrollWidth > el.clientWidth + 1 ? el.setAttribute('tabindex', '0') : el.removeAttribute('tabindex'));
+  addEventListener('resize', fitScroll); fitScroll();
+  document.querySelectorAll('details').forEach(d => d.addEventListener('toggle', fitScroll));
+
+  // graficul cantinei: se construiește din tabelul de cifre, care rămâne sursa și varianta accesibilă
+  const src = document.querySelector('[data-chart-src]'), plot = document.querySelector('[data-plot]');
+  if (src && plot) {
+    const rows = [...src.tBodies[0].rows].map(r => ({ m: r.dataset.m, name: r.cells[0].textContent, a: +r.dataset.a, b: +r.dataset.b }));
+    const MAX = 3500, NEED = 1500;
+    const fmt = n => n.toLocaleString('ro-RO') + ' €';
+    const pct = v => (v / MAX * 100).toFixed(2) + '%';
+    const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+    const peak = rows.reduce((m, r, i) => r.a + r.b > rows[m].a + rows[m].b ? i : m, 0);
+
+    const area = el('div', 'area'), grid = el('div', 'grid'), colsBox = el('div', 'cols'), need = el('div', 'need'), tip = el('div', 'tip');
+    [grid, colsBox, need, tip].forEach(n => n.setAttribute('aria-hidden', 'true'));
+    [0, 1000, 2000, 3000].forEach(v => { const t = el('span'); t.style.bottom = pct(v); t.append(el('b', null, v.toLocaleString('ro-RO'))); grid.append(t); });
+    const cols = rows.map((r, i) => {
+      const c = el('div', 'col'), st = el('div', 'stack');
+      st.style.height = pct(r.a + r.b);
+      const one = el('i', 'one'), sub = el('i', 'sub'); one.style.flexGrow = r.b; sub.style.flexGrow = r.a;
+      st.append(one, sub);
+      if (i === peak) st.append(el('span', 'cap', fmt(r.a + r.b)));
+      c.append(st, el('span', 'xl', r.m)); colsBox.append(c); return c;
+    });
+    need.style.bottom = pct(NEED); need.append(el('span', null, 'Nevoie: ' + fmt(NEED)));
+    tip.hidden = true;
+    area.append(grid, colsBox, need, tip);
+    const live = el('p', 'sr-only'); live.setAttribute('aria-live', 'polite');
+    plot.append(area, live);
+    plot.tabIndex = 0;
+    plot.setAttribute('role', 'group');
+    plot.setAttribute('aria-label', 'Grafic: banii cantinei pe fiecare lună. Folosește săgețile stânga și dreapta ca să citești lunile. Toate cifrele sunt și în tabelul de sub grafic.');
+    plot.hidden = false;
+
+    let cur = -1;
+    const line = (val, name, k) => { const d = el('div', 'tr'); d.append(el('i', 'k ' + k), el('b', null, val), el('span', null, name)); return d; };
+    const show = (i, say) => {
+      cur = i; const r = rows[i];
+      cols.forEach((c, k) => c.classList.toggle('on', k === i));
+      tip.replaceChildren(el('span', 'tm', r.name), line(fmt(r.a), 'Donatori lunari', 'sub'), line(fmt(r.b), 'Donații ocazionale', 'one'), line(fmt(r.a + r.b), 'Total', 'tot'));
+      tip.hidden = false;
+      const c = cols[i], left = i < rows.length / 2;
+      tip.style.left = left ? (c.offsetLeft + c.offsetWidth / 2 + 18) + 'px' : '';
+      tip.style.right = left ? '' : (area.clientWidth - c.offsetLeft - c.offsetWidth / 2 + 18) + 'px';
+      if (say) live.textContent = `${r.name}: donatori lunari ${fmt(r.a)}, donații ocazionale ${fmt(r.b)}, total ${fmt(r.a + r.b)}.`;
+    };
+    const hide = () => { cur = -1; tip.hidden = true; cols.forEach(c => c.classList.remove('on')); };
+    colsBox.addEventListener('pointermove', e => {
+      const b = colsBox.getBoundingClientRect();
+      const i = Math.max(0, Math.min(rows.length - 1, Math.floor((e.clientX - b.left) / (b.width / rows.length))));
+      if (i !== cur) show(i, false);
+    });
+    colsBox.addEventListener('pointerleave', () => { if (document.activeElement !== plot) hide(); });
+    plot.addEventListener('focus', () => show(cur < 0 ? peak : cur, true));
+    plot.addEventListener('blur', hide);
+    plot.addEventListener('keydown', e => {
+      const n = rows.length, k = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+      let i = k ? Math.max(0, Math.min(n - 1, (cur < 0 ? peak : cur) + k)) : e.key === 'Home' ? 0 : e.key === 'End' ? n - 1 : null;
+      if (i == null) { if (e.key === 'Escape') hide(); return; }
+      e.preventDefault(); show(i, true);
+    });
   }
 
   // meniul de pe ecrane înguste
