@@ -5,8 +5,10 @@
    Reguli:
    1. Două suprafețe: card alb pe fundal gri-rece și panou albastru (mereu același).
    2. Sticla apare doar peste culoare: bara de sus și elementele de pe panoul albastru.
-   3. Galbenul e doar tentă: punctul din logo și din etichete, plus starea
+   3. Galbenul e doar tentă: pătrățelul din etichete, plus starea
       „bani blocați / în așteptare”.
+   Logo: o singură culoare (--brand), desenat cu currentColor; inima și moneda sunt
+   decupate, deci urmează singur modurile de contrast ridicat.
    4. Un singur font (Geist), o singură scară de raze, umbre și spații.
    5. Culorile textului sunt opace, ca să aibă contrast sigur (WCAG AA) și pe gradient.
    Font: Geist, SIL Open Font License 1.1, găzduit local.
@@ -21,6 +23,7 @@
   --blue:#2236f5; --blue-hover:#3a4cff; --blue-ink:#1626c9; --blue-50:#eef0ff; --blue-line:rgba(34,54,245,.2);
   /* text și suprafețe (toate perechile trec AA) */
   --ink:#0b0e26; --ink-2:#454a68; --ink-3:#5c6180;
+  --brand:#2236f5; /* logo: albastrul principal, o singură culoare (7,2:1 pe alb, 6,6:1 pe fundal) */
   --bg:#f4f5f9; --surface:#fff; --tile:#f4f5f9;
   --line:rgba(11,14,38,.08); --line-2:rgba(11,14,38,.16);
   /* stări */
@@ -106,8 +109,9 @@ h3,.title-sm{font-size:1.0625rem;line-height:1.35;font-weight:550;letter-spacing
   --tile:rgba(255,255,255,.1); --hold:var(--sun)}
 .panel::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.08;mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-.panel::after{content:"";position:absolute;z-index:-1;pointer-events:none;right:-8%;bottom:-18%;width:min(62%,560px);aspect-ratio:5/4;
-  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 480'%3E%3Cpath d='M60 250 240 420 560 80' fill='none' stroke='white' stroke-opacity='.08' stroke-width='88' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat}
+/* inima din logo, ca filigran: ancorată jos-dreapta, unde gradientul e cel mai închis, ca să nu scadă contrastul textului */
+.panel::after{content:"";position:absolute;z-index:-1;pointer-events:none;right:0;bottom:0;height:min(110%,420px);aspect-ratio:1;transform:translate(16%,44%);
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='white' fill-opacity='.06' fill-rule='evenodd' d='M13.51 4.85A7.45 7.45 0 0 0 4.89 16.67L14.86 27.4A1.55 1.55 0 0 0 17.14 27.4L27.11 16.67A7.45 7.45 0 0 0 18.49 4.85A5.05 5.05 0 0 1 20.68 7.36A4.35 4.35 0 0 1 24.84 14.56L16 24.07L7.16 14.56A4.35 4.35 0 0 1 11.32 7.36A5.05 5.05 0 0 1 13.51 4.85ZM11.95 9.25A4.05 4.05 0 1 0 20.05 9.25A4.05 4.05 0 1 0 11.95 9.25Z'/%3E%3C/svg%3E") center/contain no-repeat}
 .panel .tile{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
 /* un card alb așezat pe panou își păstrează culorile de suprafață luminoasă */
 .panel .card{--ink:#0b0e26;--ink-2:#454a68;--ink-3:#5c6180;--line:rgba(11,14,38,.08);--line-2:rgba(11,14,38,.16);--tile:#f4f5f9;--hold:var(--sun-ink);color:var(--ink);box-shadow:0 40px 80px -36px rgba(4,8,60,.75)}
@@ -187,9 +191,8 @@ h3,.title-sm{font-size:1.0625rem;line-height:1.35;font-weight:550;letter-spacing
   background:rgba(255,255,255,.78);border:1px solid var(--line);box-shadow:0 1px 2px rgba(11,14,38,.04),0 12px 32px -22px rgba(11,14,38,.3);
   -webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);transition:background-color .25s,box-shadow .25s}
 .appbar[data-scrolled] .appbar-in{background:rgba(255,255,255,.9);box-shadow:0 1px 2px rgba(11,14,38,.05),0 16px 40px -20px rgba(11,14,38,.35)}
-.logo{justify-self:start;display:inline-flex;align-items:center;gap:.6rem;color:var(--ink);text-decoration:none;font:600 1.125rem/1 var(--font);letter-spacing:-.035em;border-radius:10px}
+.logo{justify-self:start;display:inline-flex;align-items:center;gap:.5rem;color:var(--brand);text-decoration:none;font:700 1.375rem/1 var(--font);letter-spacing:-.025em;border-radius:10px}
 .logo .mark{width:2rem;height:2rem;flex:none}
-.logo b{font-weight:600;color:var(--blue)}
 .appbar-end{justify-self:end;display:flex;align-items:center;gap:.5rem}
 .appbar-in>.seg{justify-self:center}
 /* segmente: navigația din bară (secțiuni sau file) */
