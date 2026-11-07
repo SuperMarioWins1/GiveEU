@@ -202,8 +202,16 @@ h3,.title-sm{font-size:1.0625rem;line-height:1.35;font-weight:550;letter-spacing
 .seg a:hover{color:var(--ink)}
 .seg a[aria-current]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(11,14,38,.08),0 2px 8px -4px rgba(11,14,38,.2)}
 .avatar{width:2.5rem;height:2.5rem;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--blue);color:#fff;font:600 .8125rem/1 var(--font);letter-spacing:.02em}
-.walletchip{display:flex;align-items:center;gap:.5rem;height:2.5rem;padding:0 .3125rem 0 .875rem;border-radius:999px;background:var(--surface);border:1px solid var(--line-2);font-size:.875rem;font-weight:550}
-.walletchip .mono{font-variant-numeric:tabular-nums}
+/* portofelul din bară: disponibil și blocat, cu etichete vizibile */
+.walletchip{display:flex;align-items:center;gap:.75rem;height:2.75rem;padding:0 1.125rem 0 .3125rem;border-radius:999px;background:var(--surface);border:1px solid var(--line-2);box-shadow:0 1px 2px rgba(11,14,38,.04)}
+.wc-ico{width:2.125rem;height:2.125rem;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--blue-50);color:var(--blue)}
+.wc-ico svg{width:1.0625rem;height:1.0625rem;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.wc-col{display:grid;gap:.125rem;line-height:1.1}
+.wc-l{display:inline-flex;align-items:center;gap:.25rem;font-size:.625rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2)}
+.wc-l svg{width:.7rem;height:.7rem;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.wc-v{font-size:.9375rem;font-weight:550;letter-spacing:-.02em;color:var(--ink);white-space:nowrap}
+.wc-col.hold :is(.wc-l,.wc-v){color:var(--sun-ink)}
+.wc-sep{width:1px;height:1.625rem;background:var(--line-2)}
 .bell .count{position:absolute;top:-.25rem;right:-.25rem;min-width:1.25rem;height:1.25rem;padding:0 .3rem;border-radius:999px;background:var(--rose);color:#fff;font:600 .6875rem/1.25rem var(--font);text-align:center;box-shadow:0 0 0 2px var(--surface)}
 .bell.ring svg{animation:ring .9s ease 2}
 @keyframes ring{0%,100%{transform:rotate(0)}20%{transform:rotate(16deg)}40%{transform:rotate(-14deg)}60%{transform:rotate(8deg)}80%{transform:rotate(-4deg)}}
@@ -599,6 +607,10 @@ dialog.receipt[open],dialog.win[open],dialog.explain[open]{animation:popin .35s 
    Aplicațiile (donate.html, suppliers.html)
    ========================================================================== */
 .band+.band{padding-top:3.5rem}
+/* despărțire discretă între antetul paginii și lista de cauze */
+.band.list-band{padding-top:clamp(2.5rem,5vw,3.5rem)}
+.list-band>.wrap{padding-top:clamp(1.75rem,3vw,2.25rem);border-top:1px solid var(--line-2)}
+.list-h{margin-bottom:1rem;font:600 .75rem/1.35 var(--font);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
 .page-h1{margin-top:1rem}
 
 /* filtre */
