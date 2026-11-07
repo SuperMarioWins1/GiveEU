@@ -1,0 +1,786 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GiveEU · Portal furnizori</title>
+<script>document.documentElement.classList.add('js')</script>
+<style>
+/* Portalul furnizorilor (Magazinul lui Penny, deja conectat): licitații active, ofertă, câștig, livrare, plată, donație în natură.
+   Tokenii și componentele sunt aceiași ca în index.html și donate.html: fundal alb, albastru UE, accente galbene, Arial. */
+:root{
+  --bg:#ffffff; --surface:#ffffff; --band:#f2f5f9; --ink:#1f2430; --muted:#4f5563; --line:#d4d9e1;
+  --accent:#004494; --accent-soft:#e3ecf7; --on-accent:#ffffff; --gold:#ffd617; --hold:#7a5c00; --hold-soft:#fff5c7; --bad:#d0021b;
+  --deep:#003399; --deep-ink:#ffffff; --deep-muted:#d0dbf3;
+  --display:Arial,Helvetica,sans-serif;
+  --body:Arial,Helvetica,sans-serif;
+  --mono:Arial,Helvetica,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1.0625rem/1.6 var(--body)}
+h1,h2,h3,p,ul,ol,dl,dd,figure{margin:0}
+ul,ol{padding:0;list-style:none}
+a{color:var(--accent)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+[hidden]{display:none!important}
+.band{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:3rem}
+.wrap{max-width:68rem;margin-inline:auto}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:clamp(2rem,5vw,3rem);line-height:1.08;font-weight:700}
+h2{font-size:clamp(1.5rem,3.6vw,2rem);line-height:1.15;font-weight:700}
+h3{font-size:1.2rem;font-weight:700;line-height:1.3}
+.muted{color:var(--muted)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.label{font:700 .78rem/1.2 var(--body);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:3rem;padding:0 1.35rem;border-radius:4px;border:0;font-weight:700;text-decoration:none;cursor:pointer;transition:filter .15s,transform .15s;background:none}
+.btn--main{background:var(--accent);color:var(--on-accent)}
+.btn--main:hover{filter:brightness(1.12)}
+.btn--ghost{border:1.5px solid var(--ink);color:var(--ink)}
+.btn--ghost:hover{background:var(--band)}
+.btn--quiet{color:var(--accent);padding:0 .75rem;min-height:2.5rem}
+.btn--quiet:hover{text-decoration:underline}
+.btn[disabled]{opacity:.45;cursor:not-allowed;filter:none}
+.btn--sm{min-height:2.5rem;padding:0 1rem;font-size:.95rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:6px}
+.pill{display:inline-flex;align-items:center;gap:.35rem;font:700 .78rem/1 var(--body);padding:.4rem .6rem;border-radius:4px;white-space:nowrap}
+.pill.ok{background:var(--accent-soft);color:var(--accent)}
+.pill.hold{background:var(--hold-soft);color:var(--hold)}
+.pill.no{background:color-mix(in srgb,var(--bad) 12%,transparent);color:var(--bad)}
+.pill.mid{background:var(--band);color:var(--muted);border:1px solid var(--line)}
+.pill.acct{background:#003399;color:#ffd617}
+
+/* antet aplicație */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-top:4px solid var(--accent);border-bottom:1px solid var(--line);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:.75rem}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:21;background:var(--bg)}
+.top .wrap{display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.logo{font:700 1.4rem/1 var(--display);color:var(--ink);text-decoration:none}
+.logo span{background:#003399;color:#ffd617;padding:.15rem .35rem;margin-left:.12rem;border-radius:3px}
+.tabs{display:flex;gap:.25rem;margin-right:auto;margin-left:.75rem}
+.tabs a{padding:.5rem .85rem;border-radius:4px;color:var(--muted);text-decoration:none;font-weight:700;font-size:.95rem}
+.tabs a:hover{color:var(--ink);background:var(--band)}
+.tabs a[aria-current="page"]{background:var(--accent-soft);color:var(--accent)}
+.walletchip{display:flex;align-items:center;gap:.6rem;padding:.35rem .5rem .35rem .5rem;border:1px solid var(--line);border-radius:4px;background:var(--surface);font-size:.9rem}
+.avatar{width:2.1rem;height:2.1rem;border-radius:50%;display:grid;place-items:center;background:#003399;color:#ffd617;font:700 .85rem/1 var(--display)}
+.switch{font-size:.9rem;color:var(--accent);font-weight:700;text-decoration:none;white-space:nowrap}
+.switch:hover{text-decoration:underline}
+@media (max-width:700px){.walletchip .pill{display:none}.tabs{margin-left:0;order:3;width:100%}.switch{display:none}}
+
+/* notificări */
+.bellwrap{position:relative}
+.bell{position:relative;width:2.5rem;height:2.5rem;border-radius:4px;border:1px solid var(--line);background:var(--surface);cursor:pointer;display:grid;place-items:center;color:var(--ink)}
+.bell:hover{background:var(--band)}
+.bell svg{width:1.2rem;height:1.2rem}
+.bell .count{position:absolute;top:-.35rem;right:-.35rem;min-width:1.25rem;height:1.25rem;padding:0 .3rem;border-radius:999px;background:var(--bad);color:#fff;font:700 .72rem/1.25rem var(--body);text-align:center}
+.bell.ring svg{animation:ring .9s ease 2}
+@keyframes ring{0%,100%{transform:rotate(0)}20%{transform:rotate(16deg)}40%{transform:rotate(-14deg)}60%{transform:rotate(8deg)}80%{transform:rotate(-4deg)}}
+.npanel{position:absolute;right:0;top:calc(100% + .5rem);width:min(24rem,calc(100vw - 32px));max-height:70vh;overflow:auto;padding:.5rem;z-index:30;border-top:4px solid var(--accent);box-shadow:0 18px 40px -20px color-mix(in srgb,var(--ink) 50%,transparent)}
+.npanel h2{font-size:1rem;padding:.6rem .75rem}
+.nitem{display:grid;grid-template-columns:auto 1fr;gap:.2rem .75rem;padding:.75rem;border-radius:4px;cursor:pointer;width:100%;text-align:left;border:0;background:none}
+.nitem:hover{background:var(--band)}
+.nitem.unread{background:var(--accent-soft)}
+.nitem .ic{width:2rem;height:2rem;border-radius:50%;display:grid;place-items:center;grid-row:span 2;font-size:1rem}
+.nitem .ic.win{background:var(--gold);color:#003399}
+.nitem .ic.lose{background:var(--line);color:var(--muted)}
+.nitem .ic.info{background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent)}
+.nitem .ic.pay{background:var(--accent);color:var(--on-accent);font-weight:700}
+.nitem strong{font-weight:700;font-size:.95rem}
+.nitem span.t{font-size:.86rem;color:var(--muted)}
+
+/* cap de pagină */
+.intro-band{background:var(--band);border-bottom:1px solid var(--line)}
+.intro-acct{display:grid;gap:1.5rem;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);align-items:end}
+@media (max-width:820px){.intro-acct{grid-template-columns:minmax(0,1fr)}}
+.intro-acct p{color:var(--muted);font-size:1.1rem;max-width:36rem;margin-top:.6rem}
+.biz{padding:1.25rem 1.4rem;display:grid;gap:.85rem;border-top:4px solid var(--gold)}
+.wallet-head{display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.wallet-nums{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.wallet-nums div{display:grid;gap:.15rem}
+.wallet-nums .mono{font-size:1.45rem;line-height:1.2;font-weight:700}
+.biz .rules{display:flex;flex-wrap:wrap;gap:.4rem}
+.biz .rules span{font-size:.82rem;padding:.3rem .6rem;border-radius:4px;background:var(--band);border:1px solid var(--line)}
+
+/* secțiuni */
+.sec-h{display:flex;justify-content:flex-start;align-items:center;gap:.9rem;flex-wrap:wrap;margin:2.75rem 0 1.1rem}
+.sec-h:first-child{margin-top:0}
+.sico{width:3rem;height:3rem;border-radius:6px;display:grid;place-items:center;background:var(--accent);color:var(--on-accent);flex:none}
+.sico.win{background:var(--gold);color:#003399}
+.sico.gift{background:var(--bad);color:#fff}
+.sico svg,.aico svg{width:1.45rem;height:1.45rem;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* licitații */
+.ahead{display:flex;align-items:flex-start;gap:.85rem}
+.aico{width:2.9rem;height:2.9rem;border-radius:6px;display:grid;place-items:center;flex:none;background:var(--accent-soft);color:var(--accent)}
+.aico.t-hold{background:var(--hold-soft);color:var(--hold)}
+.aico.t-bad{background:color-mix(in srgb,var(--bad) 10%,transparent);color:var(--bad)}
+.solo{color:var(--accent);font-weight:700}
+.auctions{display:grid;gap:1.25rem;grid-template-columns:repeat(auto-fill,minmax(19rem,1fr))}
+.auction{padding:1.4rem;display:flex;flex-direction:column;gap:.85rem;border-top:4px solid var(--accent)}
+.auction .tags{display:flex;flex-wrap:wrap;gap:.4rem}
+.auction .ngo{font-size:.9rem;color:var(--muted)}
+.auction .facts{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;font-size:.9rem}
+.auction .facts div{display:grid;gap:.1rem;padding:.6rem .75rem;border-radius:4px;background:var(--band)}
+.auction .facts .mono{font-size:1.05rem;font-weight:700}
+.rivals{display:flex;align-items:center;gap:.6rem;font-size:.9rem;color:var(--muted)}
+.rivals .faces{display:flex}
+.rivals .faces i{width:1.6rem;height:1.6rem;border-radius:50%;border:2px solid var(--surface);background:var(--line);display:grid;place-items:center;font:700 .7rem/1 var(--display);color:var(--muted);font-style:normal}
+.rivals .faces i+i{margin-left:-.45rem}
+.rivals .faces i.me{background:#003399;color:#ffd617}
+.auction .actions{margin-top:auto;display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;padding-top:.3rem}
+.auction.mine{box-shadow:0 0 0 2px var(--accent)}
+.auction.won{border:2px solid var(--accent);border-top:4px solid var(--gold);background:linear-gradient(180deg,var(--accent-soft),var(--surface) 38%)}
+.auction.won.flash{animation:fresh 2s ease}
+@keyframes fresh{0%,30%{box-shadow:0 0 0 4px var(--gold)}100%{box-shadow:0 0 0 0 transparent}}
+.ribbon{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.25rem .75rem;align-items:center;font-size:.86rem}
+.ribbon span:first-child{background:var(--gold);color:#003399;font-weight:700;padding:.35rem .75rem;border-radius:4px;letter-spacing:.02em}
+.wtrack{display:flex;align-items:center;gap:.4rem;font-size:.86rem;font-weight:700;color:var(--muted)}
+.wtrack .ws{display:flex;align-items:center;gap:.35rem;white-space:nowrap}
+.wtrack .ws i{width:1.4rem;height:1.4rem;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:.75rem;border:1.5px solid var(--line);background:var(--surface)}
+.wtrack .ws.on{color:var(--accent)}
+.wtrack .ws.on i{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.wtrack .wl{flex:1;height:2px;background:var(--line);min-width:.75rem}
+.wnext{font-size:.95rem;padding:.75rem .9rem;border-radius:4px;background:var(--hold-soft);border:1px solid color-mix(in srgb,var(--hold) 30%,transparent)}
+.mybid{display:flex;justify-content:space-between;align-items:center;gap:.75rem;padding:.7rem .85rem;border-radius:4px;background:var(--accent-soft);font-size:.92rem}
+
+/* panoul de ofertă */
+dialog.drawer{position:fixed;inset:0 0 0 auto;margin:0;width:min(31rem,100%);height:100%;max-height:none;max-width:none;border:0;border-left:1px solid var(--line);padding:0;background:var(--surface);color:var(--ink);overflow:hidden}
+dialog.drawer[open]{display:flex;flex-direction:column;animation:slidein .32s cubic-bezier(.2,.7,.2,1)}
+dialog::backdrop{background:color-mix(in srgb,#0b1a3a 45%,transparent);backdrop-filter:blur(2px)}
+@keyframes slidein{from{transform:translateX(100%)}to{transform:none}}
+.d-head{padding:1rem 1.25rem .9rem;border-top:4px solid var(--accent);border-bottom:1px solid var(--line);display:grid;gap:.75rem}
+.d-head .row{display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.d-head .cause-t{font:700 1rem/1.3 var(--display)}
+.x{width:2.5rem;height:2.5rem;border-radius:4px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-size:1.2rem;line-height:1;flex:none}
+.x:hover{background:var(--band)}
+.d-body{flex:1;overflow:auto;padding:1.5rem 1.25rem;display:grid;gap:1.25rem;align-content:start;position:relative}
+.d-body h2{font-size:1.6rem}
+.d-body .lead{color:var(--muted)}
+.d-foot{padding:1rem 1.25rem calc(1rem + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:.75rem}
+.d-foot .btn--main{flex:1}
+.field{display:grid;gap:.35rem}
+.field label{font-weight:700;font-size:.92rem}
+.field input,.field select{min-height:3rem;border-radius:4px;border:1.5px solid var(--line);background:var(--surface);padding:0 .9rem}
+.field input{font:400 1.1rem/1 var(--mono)}
+.field input[type=date]{font:400 1rem/1 var(--body)}
+.field textarea{min-height:4.5rem;border-radius:4px;border:1.5px solid var(--line);background:var(--surface);padding:.6rem .9rem;resize:vertical}
+.field input:focus,.field textarea:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media (max-width:480px){.grid2{grid-template-columns:1fr}}
+.spec{display:grid;gap:.45rem}
+.spec li{display:flex;gap:.55rem;font-size:.95rem}
+.spec li::before{content:"✓";color:var(--accent);font-weight:700}
+.agent{padding:1rem 1.1rem;border-radius:6px;background:var(--hold-soft);border:1px solid color-mix(in srgb,var(--hold) 35%,transparent);display:grid;gap:.6rem}
+.agent .pill{justify-self:start;background:var(--gold);color:#003399}
+.live{display:flex;flex-wrap:wrap;gap:.5rem}
+.warn{font-size:.93rem;padding:.85rem 1rem;border-radius:4px;background:color-mix(in srgb,var(--bad) 8%,transparent);border:1px solid color-mix(in srgb,var(--bad) 35%,transparent)}
+.kind-hero{padding:1rem 1.1rem;border-radius:6px;background:var(--accent-soft);display:grid;gap:.35rem}
+.kind-hero .mono{font-size:1.6rem;font-weight:700;color:var(--accent)}
+.how{display:grid;gap:.65rem}
+.how li{display:grid;grid-template-columns:1.6rem 1fr;gap:.6rem;font-size:.97rem}
+.how li span{width:1.6rem;height:1.6rem;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--on-accent);font:700 .8rem/1 var(--display)}
+.agree{display:flex;gap:.7rem;align-items:flex-start;padding:1rem;border-radius:6px;border:1.5px solid var(--line);cursor:pointer;font-size:.97rem}
+.agree:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.agree input{width:1.15rem;height:1.15rem;accent-color:var(--accent);margin:.2rem 0 0;flex:none}
+.note{font-size:.92rem;color:var(--muted)}
+
+/* ecranul de câștig */
+dialog.win{border:0;padding:0;border-radius:8px;border-top:4px solid var(--accent);width:min(30rem,calc(100% - 32px));max-height:calc(100% - 32px);background:var(--surface);color:var(--ink);overflow:hidden}
+dialog.win[open]{animation:popin .4s cubic-bezier(.3,1.3,.5,1)}
+@keyframes popin{from{transform:scale(.3);opacity:0}}
+.win-body{position:relative;padding:1.75rem 1.5rem 1.5rem;display:grid;gap:1rem;text-align:center;justify-items:center}
+.win-body .next{text-align:left;width:100%}
+.seal{width:5rem;height:5rem;border-radius:50%;background:var(--accent);color:var(--on-accent);box-shadow:0 0 0 6px var(--gold);display:grid;place-items:center;animation:popin .6s cubic-bezier(.3,1.6,.5,1)}
+.impact{font-size:1.15rem;max-width:24rem}
+.impact b{color:var(--accent)}
+.earned{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center}
+.earned span{font-size:.9rem;padding:.45rem .8rem;border-radius:4px;border:1px solid var(--line);background:var(--band)}
+.earned span.new{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:700}
+.confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.confetti i{position:absolute;top:-24px;width:10px;height:14px;border-radius:2px;animation:fall var(--t,1.8s) cubic-bezier(.3,.6,.5,1) var(--dl,0s) forwards}
+.confetti i.c{width:20px;height:20px;border-radius:50%;background:var(--gold);color:#003399;font:700 11px/20px var(--display);text-align:center}
+@keyframes fall{0%{transform:translate3d(0,0,0) rotate(0)}100%{transform:translate3d(var(--x,0),110vh,0) rotate(var(--r,540deg))}}
+
+/* ofertele mele */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:1rem;margin-top:1.75rem}
+.stat{padding:1.1rem 1.25rem;display:grid;gap:.2rem;border-top:4px solid var(--accent)}
+.stat .mono{font-size:1.6rem;line-height:1.2;font-weight:700}
+.offers{display:grid;gap:1rem}
+.offer{padding:1.25rem 1.4rem;display:grid;gap:.9rem}
+.offer-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.25rem 1rem;align-items:start}
+.offer-head .amt{font:700 1.4rem/1.1 var(--mono);text-align:right}
+.offer-head .sub{font-size:.9rem;color:var(--muted)}
+.offer .why{font-size:.93rem;padding:.75rem .9rem;border-radius:4px;background:var(--band)}
+.timeline{display:grid;gap:0}
+.timeline li{display:grid;grid-template-columns:1.5rem 1fr auto;gap:.85rem;align-items:start;position:relative;padding-bottom:1rem}
+.timeline li:last-child{padding-bottom:0}
+.timeline li::after{content:"";position:absolute;left:calc(.75rem - 1px);top:1.5rem;bottom:0;width:2px;background:var(--line)}
+.timeline li.done::after{background:var(--accent)}
+.timeline li:last-child::after{display:none}
+.dot{width:1.5rem;height:1.5rem;border-radius:50%;display:grid;place-items:center;font-size:.8rem;font-weight:700;background:var(--accent);color:var(--on-accent);position:relative;z-index:1}
+.dot.wait{background:var(--hold-soft);color:var(--hold);border:1.5px solid var(--hold)}
+.dot.todo{background:var(--surface);border:1.5px solid var(--line);color:var(--muted)}
+.timeline .t{display:grid;gap:.1rem;min-width:0}
+.timeline .t strong{font-weight:700}
+.timeline li.todo .t strong{color:var(--muted);font-weight:400}
+.don-actions{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.empty{padding:2rem;text-align:center;color:var(--muted)}
+
+/* explicația AI dinaintea închiderii licitațiilor */
+dialog.explain{border:0;padding:0;border-radius:8px;border-top:4px solid var(--accent);width:min(62rem,calc(100% - 32px));max-height:calc(100% - 32px);background:var(--surface);color:var(--ink);overflow:auto}
+dialog.explain[open]{animation:popin .35s cubic-bezier(.3,1.3,.5,1)}
+.ex-head{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;padding:1.25rem 1.5rem .9rem}
+.ex-head p{color:var(--muted);font-size:.95rem;margin-top:.25rem}
+.ex-img{display:block;width:100%;height:auto;aspect-ratio:16/9;background:var(--band);border-block:1px solid var(--line)}
+.ex-foot{display:flex;justify-content:flex-end;gap:.75rem;padding:1rem 1.5rem}
+
+.toast{position:fixed;left:50%;bottom:calc(1.25rem + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:70;background:var(--ink);color:#fff;padding:.8rem 1.1rem;border-radius:4px;border-left:4px solid var(--gold);font-size:.95rem;box-shadow:0 12px 30px -12px #000;max-width:calc(100% - 32px)}
+.demo-bar{display:flex;flex-wrap:wrap;gap:.75rem;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-radius:6px;border:1.5px dashed var(--line);margin-top:2.5rem;font-size:.92rem;color:var(--muted)}
+.demo-btns{display:flex;flex-wrap:wrap;gap:.5rem}
+
+footer{border-top:1px solid var(--line);font-size:.88rem;color:var(--muted);padding-block:2rem 3rem;margin-top:2rem}
+footer .wrap{display:flex;flex-wrap:wrap;gap:.75rem 2rem;justify-content:space-between;align-items:center}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="index.html" aria-label="GiveEU, pagina de prezentare">Give<span>EU</span></a>
+    <nav class="tabs" aria-label="Portal furnizori">
+      <a href="#licitatii" data-tab="licitatii">Licitații</a>
+      <a href="#oferte" data-tab="oferte">Ofertele mele</a>
+    </nav>
+    <div class="bellwrap">
+      <button class="bell" type="button" data-bell aria-expanded="false" aria-controls="npanel" aria-label="Notificări">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
+        <span class="count" data-bell-count hidden></span>
+      </button>
+      <div class="card npanel" id="npanel" data-npanel hidden><h2>Notificări</h2><div data-nlist></div></div>
+    </div>
+    <div class="walletchip" aria-label="Contul de euro digital al firmei">
+      <span class="pill acct">Cont de furnizor</span>
+      <span class="avatar" title="Magazinul lui Penny" aria-label="Conectat ca Magazinul lui Penny">MP</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- LICITAȚII -->
+  <div id="view-licitatii">
+    <section class="band intro-band" aria-labelledby="h-lic">
+      <div class="wrap intro-acct">
+        <div>
+          <span class="label">Cont de furnizor · Magazinul lui Penny</span>
+          <h1 id="h-lic" style="margin-top:.4rem">Comenzi pentru cauze, cu banii deja strânși</h1>
+          <p>Ofertezi, livrezi și ești plătit când ONG-ul confirmă.</p>
+        </div>
+        <div class="card biz" aria-label="Profilul firmei">
+          <div class="wallet-head"><span class="label">Contul de euro digital al firmei</span><span class="pill ok">Verificat cu EUDI</span></div>
+          <div class="wallet-nums">
+            <div><span class="muted" style="font-size:.88rem">Încasat</span><span class="mono" data-b-paid></span></div>
+            <div><span class="muted" style="font-size:.88rem">De încasat la livrare</span><span class="mono" style="color:var(--hold)" data-b-due></span></div>
+          </div>
+          <div class="rules" aria-label="Regulile agentului tău"><span>Alimente</span><span>Dulciuri</span><span>Jucării</span><span>Casă</span><span>Reducere maximă 20%</span><span>Până la 50 km</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" aria-label="Licitații">
+      <div class="wrap">
+        <div data-won-wrap hidden>
+          <div class="sec-h"><span class="sico win" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 21h8M10 17h4"/></svg></span><div><span class="label">Comenzi câștigate</span><h2 data-won-title>Ai câștigat</h2></div></div>
+          <div class="auctions" data-won></div>
+        </div>
+
+        <div class="sec-h"><span class="sico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14.5 3.5l6 6M11.5 6.5l6 6"/><path d="M13 5l6 6-3 3-6-6z"/><path d="M10 11l-6 6 3 3 6-6"/><path d="M3 21h9"/></svg></span><div><span class="label">Deschise acum</span><h2>Licitații active</h2></div></div>
+        <div class="auctions" data-open></div>
+
+        <div class="sec-h"><span class="sico gift" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="11" rx="2"/><path d="M3 9h18M12 9v11"/><path d="M12 9c-2-4-6-4-6-1.5S10 9 12 9zM12 9c2-4 6-4 6-1.5S14 9 12 9z"/></svg></span><div><span class="label">Fără licitație</span><h2>Donează complet produsele</h2></div></div>
+        <div class="auctions" data-kind></div>
+
+        <div class="demo-bar"><span><b>Butoane demo</b></span><div class="demo-btns"><button class="btn btn--ghost btn--sm" type="button" data-skip>Peste 3 zile →</button><button class="btn btn--ghost btn--sm" type="button" data-reset>Reset demo</button></div></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- OFERTELE MELE -->
+  <section class="band" id="view-oferte" aria-labelledby="h-of" hidden>
+    <div class="wrap">
+      <span class="label">Cont de furnizor · Magazinul lui Penny</span>
+      <h1 id="h-of" style="margin-top:.4rem">Ofertele mele</h1>
+      <div class="stats" data-ostats></div>
+      <div class="offers" data-olist style="margin-top:1.5rem"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="band" style="padding-block:2rem 3rem">
+  <div class="wrap">
+    <span><strong style="color:var(--ink)">GiveEU</strong> · prototip pentru hackathonul Pixel 5.0, noiembrie 2026. Euro digital, plățile, numele și sumele sunt simulate. Nu e un serviciu oficial al Uniunii Europene.</span>
+    <a class="btn btn--ghost btn--sm" href="donate.html">Contul de donator</a>
+  </div>
+</footer>
+
+<!-- PANOU OFERTĂ / DONAȚIE ÎN NATURĂ -->
+<dialog class="drawer" id="bid" aria-labelledby="bid-title">
+  <div class="d-head">
+    <div class="row">
+      <div style="min-width:0"><span class="label" data-b-kind>Ofertă</span><p class="cause-t" data-b-title></p></div>
+      <button class="x" type="button" data-b-close aria-label="Închide">×</button>
+    </div>
+  </div>
+  <div class="d-body" data-b-body></div>
+  <div class="d-foot">
+    <button class="btn btn--ghost" type="button" data-b-cancel>Renunță</button>
+    <button class="btn btn--main" type="button" data-b-submit>Trimite oferta</button>
+  </div>
+</dialog>
+
+<!-- REZULTAT / MULȚUMIRE -->
+<dialog class="win" id="win" aria-labelledby="win-title">
+  <div class="win-body" data-win></div>
+</dialog>
+
+<!-- CUM ALEGE AI-UL OFERTA (se arată înainte de „Peste 3 zile”) -->
+<dialog class="explain" id="explain" aria-labelledby="ex-title">
+  <div class="ex-head">
+    <div><span class="label">Între timp, la licitație</span><h2 id="ex-title" style="margin-top:.3rem">Cum alege AI-ul oferta câștigătoare</h2><p>Analizează toate ofertele, nu doar prețul. ONG-ul aprobă alegerea.</p></div>
+    <button class="x" type="button" data-ex-close aria-label="Închide">×</button>
+  </div>
+  <img class="ex-img" data-ex-img alt="Animație: AI-ul GiveEU primește ofertele furnizorilor pentru 100 de ciocolate, cu un buget de 200 €, și le compară după preț, valabilitate și distanță." width="960" height="540">
+  <div class="ex-foot"><button class="btn btn--main" type="button" data-ex-go>Continuă: peste 3 zile →</button></div>
+</dialog>
+
+<div class="toast" data-toast role="status" hidden></div>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const $ = (s, c = document) => c.querySelector(s);
+  const $$ = (s, c = document) => [...c.querySelectorAll(s)];
+  const eur = (n, d = 2) => n.toLocaleString('ro-RO', { minimumFractionDigits: d, maximumFractionDigits: d }) + ' €';
+  const round2 = n => Math.round(n * 100) / 100;
+  const roDate = iso => new Date(iso + 'T12:00:00').toLocaleDateString('ro-RO');
+  const TODAY = '2026-11-07';
+  const addDays = (iso, n) => { const d = new Date(iso + 'T12:00:00'); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
+  const ME = { name: 'Magazinul lui Penny', type: 'IMM local', dist: 8 };
+
+  /* ---------- cererile (aceleași cauze și ONG-uri ca în donate.html) ---------- */
+  const AUCTIONS = [
+    { id:'dulciuri', cause:'craciun', ngo:'Fundația Casa Copiilor', title:'100 de ciocolate', causeTitle:'100 de pachete de Crăciun', items:'100 de ciocolate cu lapte, 100 g',
+      reqs:['fără arahide','valabilitate cel puțin până la 31.01.2027','livrare la sediul ONG-ului'], budget:200, market:210, deliverBy:'2026-12-15', minValid:'2027-01-31', myValid:'2027-03-15', closesDays:2,
+      suggest:170, rivals:[{ n:'RetailNațional SA', t:'lanț național · 320 km', p:180, dist:320 }, { n:'Depozit Express SRL', t:'distribuitor · 150 km', p:155, dist:150, out:'produsele expiră pe 10.12.2026, înainte de distribuirea din 20.12' }] },
+    { id:'jucarii', cause:'craciun', ngo:'Fundația Casa Copiilor', title:'100 de jucării', causeTitle:'100 de pachete de Crăciun', items:'100 de jucării pentru 6–10 ani',
+      reqs:['certificat CE','fără piese mici','ambalate individual'], budget:600, market:650, deliverBy:'2026-12-15', closesDays:3,
+      suggest:585, rivals:[{ n:'Jucăria Fermecată', t:'magazin specializat · 25 km', p:560, dist:25 }, { n:'ToyLand Depozit', t:'distribuitor · 180 km', p:590, dist:180 }, { n:'BebeToys', t:'lanț de magazine · 60 km', p:610, dist:60 }] },
+    { id:'cantina', cause:'bucatarie', ngo:'Bucătăria Solidară', title:'Contract-cadru pe 3 luni', causeTitle:'60 de prânzuri calde pe zi', items:'orez, ulei, legume și carne pentru 60 de prânzuri pe zi', monthly:true,
+      reqs:['livrare de 2 ori pe săptămână','legume proaspete','factură pe numele ONG-ului'], budget:1500, market:1500, deliverBy:'2026-12-01', closesDays:3,
+      suggest:1320, rivals:[] },
+    { id:'hrana', cause:'hrana', ngo:'Adăpostul „Patru Lăbuțe”', title:'300 kg de hrană pentru câini', causeTitle:'300 kg de hrană pentru câini', items:'300 kg de hrană uscată pentru câini adulți, saci de 15 kg',
+      reqs:['certificat sanitar-veterinar','livrare la adăpost','valabilitate cel puțin 6 luni'], budget:600, market:640, deliverBy:'2026-12-10', closesDays:3, opensWhenFunded:true,
+      suggest:550, rivals:[{ n:'PetFarm', t:'producător local · 25 km', p:540, dist:25 }] }
+  ];
+  const KIND = [
+    { id:'paturi', ngo:'Asociația „Seniori, Nu Singuri”', title:'50 de pături și termofoare', items:'50 de pături groase și 50 de termofoare', target:750, market:820, deliverBy:'2026-12-05', desc:'Pentru vârstnici care locuiesc singuri la munte, înainte de primul ger.' },
+    { id:'hrana', ngo:'Adăpostul „Patru Lăbuțe”', title:'300 kg de hrană pentru câini', items:'300 kg de hrană uscată pentru câini', target:600, market:640, deliverBy:'2026-12-10', desc:'Pentru 85 de câini salvați, cât să treacă iarna.' }
+  ];
+  const byA = Object.fromEntries(AUCTIONS.map(a => [a.id, a]));
+  const byK = Object.fromEntries(KIND.map(k => [k.id, k]));
+
+  /* ---------- stare: contul de furnizor + legătura cu contul de donator ---------- */
+  const KEY = 'giveeu-furnizor-v1', DONOR_KEY = 'giveeu-demo-v1';
+  const DONOR_SEED_FUNDED = { apa:610, paracetamol:95, craciun:372, bucatarie:1300, paturi:180, hrana:510, ghiozdane:430 };
+  const seed = () => ({ day: TODAY, paid: 0, opened: {}, bids: {}, results: {}, contracts: {}, kind: {}, notifs: [
+    { id:'n0', kind:'info', title:'Licitație nouă: 100 de ciocolate', text:'Fundația Casa Copiilor · buget blocat 200 €', at:TODAY, read:false, go:'dulciuri' } ] });
+  let S;
+  try { S = JSON.parse(localStorage.getItem(KEY)) || seed(); } catch { S = seed(); }
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch {} };
+  const donor = () => { try { return JSON.parse(localStorage.getItem(DONOR_KEY)); } catch { return null; } };
+  const donorFunded = id => { const d = donor(); return d && d.funded && d.funded[id] != null ? d.funded[id] : DONOR_SEED_FUNDED[id]; };
+  function markDonorInKind(id, target) {
+    // dacă există contul de donator în același browser, cauza apare acolo ca „finanțată complet, donată în natură”
+    try {
+      const d = donor(); if (!d) return;
+      d.funded[id] = Math.max(d.funded[id] || 0, target);
+      d.inkind = d.inkind || {}; d.inkind[id] = ME.name;
+      localStorage.setItem(DONOR_KEY, JSON.stringify(d));
+    } catch {}
+  }
+  // o licitație e deschisă dacă nu s-a închis, cauza e finanțată (pentru cele care așteaptă bani) și nu a fost donată în natură
+  const isOpen = a => !S.results[a.id] && !S.kind[a.id] && (!a.opensWhenFunded || donorFunded(a.cause) >= a.budget);
+  const closesOn = a => addDays((S.opened && S.opened[a.id]) || TODAY, a.closesDays);
+  // licitațiile care se deschid când cauza e finanțată în contul de donator: le datăm și anunțăm o singură dată
+  function checkNewlyOpened() {
+    S.opened = S.opened || {};
+    AUCTIONS.filter(a => a.opensWhenFunded && isOpen(a) && !S.opened[a.id]).forEach(a => {
+      S.opened[a.id] = S.day;
+      notify({ kind: 'info', title: `Licitație nouă: ${a.title}`, text: `${a.ngo} · cauza tocmai a fost finanțată de donatori`, go: a.id });
+    });
+    save();
+  }
+  const discount = (a, p) => Math.round((1 - p / a.market) * 100);
+
+  /* ---------- notificări ---------- */
+  const bell = $('[data-bell]'), npanel = $('[data-npanel]');
+  function notify(n) { S.notifs.unshift({ id: 'n' + Date.now() + Math.random().toString(16).slice(2, 6), at: S.day, read: false, ...n }); }
+  function renderBell() {
+    const unread = S.notifs.filter(n => !n.read).length, c = $('[data-bell-count]');
+    c.hidden = !unread; c.textContent = unread;
+    $('[data-nlist]').innerHTML = S.notifs.length ? S.notifs.map(n => `
+      <button type="button" class="nitem${n.read ? '' : ' unread'}" data-n="${n.id}">
+        <span class="ic ${n.kind}" aria-hidden="true">${n.kind === 'win' ? '★' : n.kind === 'lose' ? '–' : n.kind === 'pay' ? '€' : '•'}</span>
+        <strong>${n.title}</strong><span class="t">${n.text} · ${roDate(n.at)}</span>
+      </button>`).join('') : '<p class="muted" style="padding:.75rem">Nicio notificare.</p>';
+  }
+  bell.addEventListener('click', () => { const o = npanel.hidden; npanel.hidden = !o; bell.setAttribute('aria-expanded', String(o)); });
+  document.addEventListener('click', e => { if (!npanel.hidden && !e.target.closest('.bellwrap')) { npanel.hidden = true; bell.setAttribute('aria-expanded', 'false'); } });
+  $('[data-nlist]').addEventListener('click', e => {
+    const b = e.target.closest('[data-n]'); if (!b) return;
+    const n = S.notifs.find(x => x.id === b.dataset.n); n.read = true; save(); renderBell();
+    npanel.hidden = true; bell.setAttribute('aria-expanded', 'false');
+    if (n.kind === 'win') showWin(n.go);
+    else if (n.kind === 'lose') location.hash = '#oferte';
+    else { location.hash = '#licitatii'; const el = document.getElementById('w-' + n.go) || document.getElementById('a-' + n.go); if (el) el.scrollIntoView({ behavior: reduce.matches ? 'auto' : 'smooth', block: 'center' }); }
+  });
+
+  /* ---------- toast ---------- */
+  function ringBell() { const b = $('[data-bell]'); b.classList.remove('ring'); void b.offsetWidth; b.classList.add('ring'); }
+  let tt; function toast(t) { const el = $('[data-toast]'); el.textContent = t; el.hidden = false; clearTimeout(tt); tt = setTimeout(() => el.hidden = true, 3200); }
+
+  /* ---------- contul firmei ---------- */
+  function due() { return Object.entries(S.contracts).filter(([, c]) => c.stage < 2).reduce((s, [id]) => s + S.bids[id].price, 0); }
+  function renderBiz() {
+    $('[data-b-paid]').textContent = eur(S.paid);
+    $('[data-b-due]').textContent = eur(due());
+  }
+
+  /* ---------- licitații ---------- */
+  function faces(a) { const mine = !!S.bids[a.id]; return `<span class="faces" aria-hidden="true">${a.rivals.map((r, i) => `<i>${i + 1}</i>`).join('')}${mine || !a.rivals.length ? '<i class="me">MP</i>' : ''}</span>`; }
+  const rivalWord = n => n === 1 ? '1 contracandidat' : `${n} contracandidați`;
+  function rivalsLine(a) {
+    const n = a.rivals.length, mine = !!S.bids[a.id];
+    if (!n) return `<span class="solo">${mine ? 'Ești singurul ofertant' : 'Nimeni n-a ofertat încă. Poți fi primul!'}</span>`;
+    return `<span>${mine ? `Tu și încă ${rivalWord(n)}` : `${rivalWord(n)} ${n === 1 ? 'a' : 'au'} ofertat deja`}</span>`;
+  }
+  const ICONS = {
+    dulciuri: ['t-hold', '<circle cx="12" cy="12" r="4"/><path d="M8.6 10.2 4 7.5l.8 4.3M15.4 13.8 20 16.5l-.8-4.3"/>'],
+    jucarii: ['', '<rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/><rect x="8.5" y="5" width="7" height="7" rx="1.5"/>'],
+    cantina: ['t-bad', '<path d="M4 11h16a8 8 0 0 1-16 0z"/><path d="M9 8c0-1.5 1-1.5 1-3.5M14 8c0-1.5 1-1.5 1-3.5"/>'],
+    hrana: ['t-hold', '<circle cx="6.5" cy="10" r="1.6"/><circle cx="10" cy="6.5" r="1.6"/><circle cx="14" cy="6.5" r="1.6"/><circle cx="17.5" cy="10" r="1.6"/><path d="M12 12c-3 0-5 3-5 5 0 1.5 1.5 2 2.5 2s1.5-.6 2.5-.6 1.5.6 2.5.6 2.5-.5 2.5-2c0-2-2-5-5-5z"/>'],
+    paturi: ['', '<path d="M3 11l9-7 9 7v9H3z"/><path d="M9 20v-5h6v5"/>']
+  };
+  const icon = id => { const [t, d] = ICONS[id] || ['', '<circle cx="12" cy="12" r="6"/>']; return `<span class="aico ${t}" aria-hidden="true"><svg viewBox="0 0 24 24">${d}</svg></span>`; };
+  function auctionCard(a) {
+    const mine = S.bids[a.id];
+    return `<article class="card auction${mine ? ' mine' : ''}" id="a-${a.id}">
+      <div class="ahead">${icon(a.id)}<div class="tags"><span class="pill mid">${a.ngo}</span>${a.monthly ? '<span class="pill hold">Lunar · 3 luni</span>' : ''}<span class="pill ok">Se închide pe ${roDate(closesOn(a))}</span></div></div>
+      <div><p class="ngo">${a.causeTitle}</p><h3>${a.title}</h3></div>
+      <p class="muted" style="font-size:.95rem">${a.items}</p>
+      <div class="facts">
+        <div><span class="label">Buget blocat</span><span class="mono">${eur(a.budget, 0)}${a.monthly ? '/lună' : ''}</span></div>
+        <div><span class="label">Livrare până pe</span><span class="mono">${roDate(a.deliverBy)}</span></div>
+      </div>
+      <div class="rivals">${faces(a)}${rivalsLine(a)}</div>
+      ${mine ? `<div class="mybid"><span>Oferta ta: <b class="mono">${eur(mine.price)}</b>${a.monthly ? '/lună' : ''}</span><span class="pill ok">−${discount(a, mine.price)}% față de piață</span></div>` : ''}
+      <div class="actions">
+        <button class="btn btn--main btn--sm" type="button" data-bid="${a.id}">${mine ? 'Modifică oferta' : 'Fă o ofertă'}</button>
+        ${a.monthly ? '' : `<button class="btn btn--quiet" type="button" data-kindlot="${a.id}">Donez complet</button>`}
+      </div>
+    </article>`;
+  }
+  // comenzile câștigate: apar primele pe pagina de licitații, cu pasul următor
+  function wonCard(id) {
+    const a = byA[id], b = S.bids[id], c = S.contracts[id];
+    const steps = ['Câștigată', 'Livrat', 'Plătit'];
+    const track = steps.map((t, i) => `<span class="ws${i <= c.stage ? ' on' : ''}"><i>${i <= c.stage ? '✓' : i + 1}</i>${t}</span>`).join('<span class="wl" aria-hidden="true"></span>');
+    const next = c.stage === 0 ? `Livrează ${a.items} la ${a.ngo} până pe ${roDate(a.deliverBy)}.`
+      : c.stage === 1 ? `Ai livrat. ${a.ngo} verifică produsele și pozele.`
+      : `${a.ngo} a confirmat livrarea. Ai încasat ${eur(b.price)}.`;
+    const act = c.stage === 0 ? `<button class="btn btn--main btn--sm" type="button" data-deliver="${id}">Am livrat</button>`
+      : c.stage === 1 ? `<button class="btn btn--ghost btn--sm" type="button" data-confirm="${id}">Demo: ONG-ul confirmă primirea</button>`
+      : '<span class="pill ok">Plătit</span>';
+    return `<article class="card auction won" id="w-${id}">
+      <div class="ahead">${icon(a.id)}<div class="ribbon" style="flex:1"><span>★ Câștigată</span><span class="muted">ONG-ul a aprobat oferta ta · ${roDate(closesOn(a))}</span></div></div>
+      <div><p class="ngo">${a.ngo} · ${a.causeTitle}</p><h3>${a.title}</h3></div>
+      <div class="facts">
+        <div><span class="label">${c.stage === 2 ? 'Încasat' : 'Vei încasa'}</span><span class="mono">${eur(b.price)}${a.monthly ? '/lună' : ''}</span></div>
+        <div><span class="label">Livrare până pe</span><span class="mono">${roDate(a.deliverBy)}</span></div>
+      </div>
+      <div class="wtrack" aria-label="Stadiul comenzii">${track}</div>
+      <p class="wnext">${next}</p>
+      <p class="muted" style="font-size:.88rem">Banii sunt deja blocați de donatori, deci plata e garantată.</p>
+      <div class="actions">${act}</div>
+    </article>`;
+  }
+  function renderAuctions() {
+    const won = Object.keys(S.contracts);
+    $('[data-won-wrap]').hidden = !won.length;
+    $('[data-won-title]').textContent = won.length === 1 ? 'Ai câștigat o licitație' : `Ai câștigat ${won.length} licitații`;
+    $('[data-won]').innerHTML = won.map(wonCard).join('');
+    const open = AUCTIONS.filter(isOpen);
+    $('[data-open]').innerHTML = open.length ? open.map(auctionCard).join('') : '<p class="card empty">Nu sunt licitații deschise acum. Revino curând.</p>';
+    const kinds = KIND.filter(k => !S.kind[k.id] && !(byA[k.id] && (isOpen(byA[k.id]) || S.results[k.id])));
+    $('[data-kind]').innerHTML = kinds.length ? kinds.map(k => {
+      const f = donorFunded(k.id), p = Math.min(100, Math.round(f / k.target * 100));
+      return `<article class="card auction"><div class="ahead">${icon(k.id)}<div class="tags"><span class="pill mid">${k.ngo}</span><span class="pill hold">${p}% strâns</span></div></div>
+        <div><h3>${k.title}</h3><p class="muted" style="font-size:.95rem;margin-top:.3rem">${k.desc}</p></div>
+        <div class="facts"><div><span class="label">Valoare de piață</span><span class="mono">${eur(k.market, 0)}</span></div><div><span class="label">Livrare până pe</span><span class="mono">${roDate(k.deliverBy)}</span></div></div>
+        <div class="actions"><button class="btn btn--main btn--sm" type="button" data-kind-id="${k.id}">Donez complet produsele</button></div>
+      </article>`;
+    }).join('') : '<p class="muted">Ai acoperit deja cauzele din categoriile tale. Mulțumim!</p>';
+  }
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-bid]'), k = e.target.closest('[data-kindlot]'), kc = e.target.closest('[data-kind-id]');
+    if (b) openBid(b.dataset.bid);
+    if (k) openKind({ lot: k.dataset.kindlot });
+    if (kc) openKind({ cause: kc.dataset.kindId });
+  });
+
+  /* ---------- panoul de ofertă ---------- */
+  const dlg = $('#bid'), body = $('[data-b-body]'), submit = $('[data-b-submit]');
+  let mode = null;
+  function openBid(id) {
+    const a = byA[id], mine = S.bids[id];
+    mode = { type: 'bid', id };
+    $('[data-b-kind]').textContent = 'Ofertă · se închide pe ' + roDate(closesOn(a));
+    $('[data-b-title]').textContent = a.title + ' · ' + a.ngo;
+    submit.textContent = mine ? 'Actualizează oferta' : 'Trimite oferta';
+    body.innerHTML = `
+      <div><h2 id="bid-title">${a.items}</h2><p class="lead">Cererea e aprobată de ONG. Banii sunt deja blocați de donatori: <b class="mono">${eur(a.budget, 0)}${a.monthly ? '/lună' : ''}</b>.</p></div>
+      <ul class="spec">${a.reqs.map(r => `<li>${r}</li>`).join('')}<li>livrare până pe ${roDate(a.deliverBy)}</li></ul>
+      <div class="rivals">${faces(a)}${a.rivals.length ? `<span>${rivalWord(a.rivals.length)} ${a.rivals.length === 1 ? 'a' : 'au'} ofertat: ${a.rivals.map(r => r.t.split(' · ')[0]).join(', ')}.</span>` : '<span class="solo">Nimeni n-a ofertat încă. Poți fi primul!</span>'}</div>
+      <div class="agent"><span class="pill">Sugestia agentului tău</span>
+        <p><b class="mono">${eur(a.suggest)}</b>${a.monthly ? '/lună' : ''}, adică ${discount(a, a.suggest)}% sub prețul de piață estimat (${eur(a.market, 0)}), în limita reducerii maxime de 20% setate de tine.</p>
+        <button class="btn btn--ghost btn--sm" type="button" data-use style="justify-self:start">Folosește sugestia</button></div>
+      <div class="grid2">
+        <div class="field"><label for="f-price">Prețul tău (€${a.monthly ? '/lună' : ''})</label><input id="f-price" type="number" min="1" step="1" max="${a.budget}" value="${mine ? mine.price : ''}" placeholder="max. ${a.budget}"></div>
+        <div class="field"><label for="f-date">Livrezi pe</label><input id="f-date" type="date" min="${TODAY}" max="${a.deliverBy}" value="${mine ? mine.date : addDays(a.deliverBy, -5)}"></div>
+      </div>
+      ${a.minValid ? `<div class="field"><label for="f-valid">Produsele sunt valabile până la</label><input id="f-valid" type="date" value="${mine ? mine.valid : a.myValid}"></div>` : ''}
+      <div class="field"><label for="f-note">Detalii despre produs</label><textarea id="f-note">${mine ? mine.note : 'Conform cerinței: ' + a.items + '.'}</textarea></div>
+      <div class="live" data-live aria-live="polite"></div>
+      <div class="warn" data-berr hidden></div>
+      `;
+    const upd = () => {
+      const p = parseFloat($('#f-price').value), d = $('#f-date').value, v = a.minValid ? $('#f-valid').value : null;
+      let err = '';
+      if (!(p > 0)) err = 'Scrie un preț.';
+      else if (p > a.budget) err = `Prețul nu poate depăși bugetul blocat de ${eur(a.budget, 0)}.`;
+      else if (!d || d > a.deliverBy) err = `Livrarea trebuie să fie cel târziu pe ${roDate(a.deliverBy)}.`;
+      else if (a.minValid && (!v || v < a.minValid)) err = `Produsele trebuie să fie valabile cel puțin până la ${roDate(a.minValid)}.`;
+      const box = $('[data-berr]', body); box.hidden = !err; box.textContent = err; submit.disabled = !!err;
+      $('[data-live]', body).innerHTML = p > 0 && p <= a.budget ? `<span class="pill ok">${discount(a, p)}% sub prețul de piață</span>` : '';
+    };
+    $$('input,textarea', body).forEach(i => i.addEventListener('input', upd));
+    $('[data-use]', body).addEventListener('click', () => { $('#f-price').value = a.suggest; upd(); });
+    upd();
+    dlg.showModal();
+  }
+
+  function openKind({ lot, cause }) {
+    const a = lot ? byA[lot] : null, k = cause ? byK[cause] : null;
+    const title = a ? a.title + ' · ' + a.ngo : k.title + ' · ' + k.ngo;
+    const value = a ? a.market : k.market, items = a ? a.items : k.items, by = a ? a.deliverBy : k.deliverBy;
+    mode = { type: 'kind', lot, cause, value };
+    $('[data-b-kind]').textContent = 'Donație în natură';
+    $('[data-b-title]').textContent = title;
+    submit.textContent = 'Donez complet';
+    submit.disabled = true;
+    body.innerHTML = `
+      <div><h2 id="bid-title">Livrezi gratuit, fără licitație</h2><p class="lead">Acoperi complet nevoia din stocul tău. ONG-ul primește produsele, iar tu apari în raportul donatorilor.</p></div>
+      <div class="kind-hero"><span class="label">Valoarea donației tale</span><span class="mono">${eur(value, 0)}</span><span>${items}, livrate până pe ${roDate(by)}</span></div>
+      <ol class="how">
+        <li><span>1</span><p>Livrezi produsele direct la ONG.</p></li>
+        <li><span>2</span><p>ONG-ul confirmă primirea, cu poze.</p></li>
+        <li><span>3</span><p>Banii pe care donatorii i-au blocat ${a ? 'pentru aceste produse merg la următoarea nevoie a cauzei' : 'pentru această cauză se întorc la ei sau merg la altă nevoie'}, cum a ales fiecare.</p></li>
+      </ol>
+      <label class="agree"><input type="checkbox" data-kagree> <span>Confirm că donez gratuit produsele, conform cerinței ONG-ului.</span></label>`;
+    $('[data-kagree]', body).addEventListener('change', e => submit.disabled = !e.target.checked);
+    dlg.showModal();
+  }
+
+  submit.addEventListener('click', () => {
+    if (submit.disabled || !mode) return;
+    if (mode.type === 'bid') {
+      const a = byA[mode.id], had = !!S.bids[a.id];
+      S.bids[a.id] = { price: round2(parseFloat($('#f-price').value)), date: $('#f-date').value, valid: a.minValid ? $('#f-valid').value : null, note: $('#f-note').value, at: S.day };
+      save(); dlg.close(); renderAll();
+      toast(had ? 'Oferta a fost actualizată.' : `Oferta de ${eur(S.bids[a.id].price)} a fost trimisă. Află rezultatul pe ${roDate(closesOn(a))}.`);
+    } else {
+      const id = mode.lot || mode.cause, a = mode.lot ? byA[mode.lot] : null, k = mode.cause ? byK[mode.cause] : null;
+      S.kind[id] = { value: mode.value, at: S.day, title: a ? a.title : k.title, ngo: a ? a.ngo : k.ngo, stage: 0 };
+      if (k) markDonorInKind(k.id, k.target);
+      notify({ kind: 'win', title: 'Mulțumim pentru donația în natură!', text: `${a ? a.title : k.title} · ${a ? a.ngo : k.ngo}`, go: 'kind:' + id });
+      save(); dlg.close(); renderAll(); showWin('kind:' + id);
+    }
+  });
+  $('[data-b-close]').addEventListener('click', () => dlg.close());
+  $('[data-b-cancel]').addEventListener('click', () => dlg.close());
+  dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+
+  /* ---------- închiderea licitațiilor (scor ca în specificație) ---------- */
+  function score(cands, a) {
+    const minP = Math.min(...cands.map(c => c.p));
+    const maxD = Math.max(...cands.map(c => (a.market - c.p) / a.market), 0.0001);
+    return cands.map(c => ({ ...c, s: .5 * (minP / c.p) + .2 + .15 * (c.dist <= 30 ? 1 : 30 / c.dist) + .15 * Math.max(0, (a.market - c.p) / a.market) / maxD }))
+      .sort((x, y) => y.s - x.s);
+  }
+  function closeAuction(a) {
+    const mine = S.bids[a.id];
+    if (!mine) { S.results[a.id] = { winner: 'other', name: score(a.rivals.filter(r => !r.out), a)[0].n }; return; }
+    const cands = [{ n: ME.name, p: mine.price, dist: ME.dist, me: true }, ...a.rivals.filter(r => !r.out)];
+    const ranked = score(cands, a), w = ranked[0];
+    S.results[a.id] = { winner: w.me ? 'me' : 'other', name: w.n, price: w.p, ranked: ranked.map(r => ({ n: r.n, p: r.p, me: !!r.me })), out: a.rivals.filter(r => r.out).map(r => ({ n: r.n, why: r.out })) };
+    if (w.me) {
+      S.contracts[a.id] = { stage: 0 };
+      notify({ kind: 'win', title: `Ai câștigat: ${a.title}`, text: `${a.ngo} · ${eur(mine.price)}${a.monthly ? '/lună' : ''}`, go: a.id });
+    } else {
+      notify({ kind: 'lose', title: `Nu ai câștigat: ${a.title}`, text: `A câștigat ${w.n} cu ${eur(w.p)}${a.monthly ? '/lună' : ''}`, go: a.id });
+    }
+  }
+  // „Peste 3 zile”: întâi arătăm cum alege AI-ul oferta, iar avansul se face când se închide fereastra
+  const explain = $('#explain'), exImg = $('[data-ex-img]');
+  let skipPending = false;
+  $('[data-skip]').addEventListener('click', () => {
+    skipPending = true;
+    exImg.src = 'assets/ai-licitatie.gif?t=' + Date.now(); // reîncepe animația de fiecare dată
+    explain.showModal();
+  });
+  $('[data-ex-close]').addEventListener('click', () => explain.close());
+  $('[data-ex-go]').addEventListener('click', () => explain.close());
+  explain.addEventListener('click', e => { if (e.target === explain) explain.close(); });
+  explain.addEventListener('close', () => {
+    exImg.removeAttribute('src');
+    if (skipPending) { skipPending = false; skipDays(); }
+  });
+
+  function skipDays() {
+    S.day = addDays(S.day, 3);
+    // se închid doar licitațiile la care ai ofertat; celelalte rămân active, cu termenul mutat înainte
+    const toClose = AUCTIONS.filter(a => isOpen(a) && S.bids[a.id] && closesOn(a) <= S.day);
+    toClose.forEach(closeAuction);
+    S.opened = S.opened || {};
+    AUCTIONS.filter(a => isOpen(a) && !S.bids[a.id] && closesOn(a) <= S.day).forEach(a => { S.opened[a.id] = S.day; });
+    save(); renderAll();
+    ringBell();
+    const wins = toClose.filter(a => S.results[a.id].winner === 'me');
+    toast(toClose.length ? `Au trecut 3 zile (${roDate(S.day)}). ${toClose.length} licitații s-au închis. Vezi notificările.` : 'Au trecut 3 zile. Nicio licitație nouă închisă.');
+    if (wins.length) setTimeout(() => showWin(wins[0].id), reduce.matches ? 0 : 700);
+  }
+
+  /* ---------- ecranul de câștig ---------- */
+  const win = $('#win');
+  function showWin(go) {
+    const box = $('[data-win]');
+    if (String(go).startsWith('kind:')) {
+      const id = go.slice(5), k = S.kind[id];
+      box.innerHTML = `<div class="confetti" data-confetti aria-hidden="true"></div>
+        <div class="seal"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.6-7 10-7 10z"/></svg></div>
+        <h2 id="win-title">Mulțumim, Penny!</h2>
+        <p class="impact">Ai donat <b>${k.title}</b> pentru ${k.ngo}, în valoare de <span class="mono">${eur(k.value, 0)}</span>.</p>
+        <div class="earned"><span class="new">Insignă: Furnizor-erou</span></div>
+        <p class="note">Cauza apare acum ca finanțată complet pentru donatori, cu numele magazinului tău în raport.</p>
+        <button class="btn btn--main" type="button" data-wclose style="width:100%">Mergi la ofertele mele</button>`;
+    } else {
+      const a = byA[go], mine = S.bids[go];
+      box.innerHTML = `<div class="confetti" data-confetti aria-hidden="true"></div>
+        <div class="seal"><svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+        <span class="label">${roDate(S.day)} · notificare</span>
+        <h2 id="win-title">Ai câștigat licitația!</h2>
+        <p class="impact"><b>${a.title}</b> pentru ${a.ngo}, cu <span class="mono">${eur(mine.price)}</span>${a.monthly ? '/lună' : ''}. ONG-ul a aprobat oferta ta.</p>
+        <ol class="how next">
+          <li><span>1</span><p>Livrezi ${a.items} până pe ${roDate(a.deliverBy)}.</p></li>
+          <li><span>2</span><p>ONG-ul confirmă primirea și încarcă poze.</p></li>
+          <li><span>3</span><p>Primești <b class="mono">${eur(mine.price)}</b> în contul firmei. Banii sunt deja blocați de donatori, deci plata e garantată.</p></li>
+        </ol>
+        <button class="btn btn--main" type="button" data-wclose style="width:100%">Vezi comanda</button>`;
+    }
+    $('[data-wclose]', box).addEventListener('click', () => {
+      win.close();
+      if (String(go).startsWith('kind:')) { location.hash = '#oferte'; return; }
+      location.hash = '#licitatii';
+      setTimeout(() => { const el = document.getElementById('w-' + go); if (el) { el.scrollIntoView({ behavior: reduce.matches ? 'auto' : 'smooth', block: 'center' }); el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); } }, 60);
+    });
+    S.notifs.forEach(n => { if (n.go === go) n.read = true; }); save(); renderBell();
+    win.showModal();
+    confetti($('[data-confetti]', box));
+  }
+  win.addEventListener('click', e => { if (e.target === win) win.close(); });
+  function confetti(box) {
+    if (reduce.matches || !box) return;
+    const colors = ['var(--accent)', 'var(--gold)', '#003399', 'var(--accent-soft)'];
+    let html = '';
+    for (let i = 0; i < 40; i++) {
+      const coin = i % 6 === 0;
+      const st = `left:${Math.random() * 100}%;--x:${(Math.random() * 120 - 60).toFixed(0)}px;--r:${(Math.random() * 720 - 360).toFixed(0)}deg;--t:${(1.6 + Math.random() * 1.4).toFixed(2)}s;--dl:${(Math.random() * .5).toFixed(2)}s;${coin ? '' : 'background:' + colors[i % colors.length]}`;
+      html += coin ? `<i class="c" style="${st}">€</i>` : `<i style="${st}"></i>`;
+    }
+    box.innerHTML = html; setTimeout(() => { box.innerHTML = ''; }, 3600);
+  }
+
+  /* ---------- ofertele mele ---------- */
+  const STEPS = ['Ofertă trimisă', 'Câștigată, aprobată de ONG', 'Livrat', 'Confirmat de ONG, plătit'];
+  function renderOffers() {
+    const bids = Object.keys(S.bids), wonN = Object.keys(S.contracts).length;
+    $('[data-ostats]').innerHTML = `
+      <div class="card stat"><span class="label">Oferte trimise</span><span class="mono">${bids.length}</span></div>
+      <div class="card stat"><span class="label">Câștigate</span><span class="mono">${wonN}</span></div>
+      <div class="card stat"><span class="label">Încasat</span><span class="mono">${eur(S.paid)}</span></div>
+      <div class="card stat"><span class="label">De încasat</span><span class="mono">${eur(due())}</span></div>`;
+    const rows = [];
+    for (const [id, k] of Object.entries(S.kind)) rows.push(`<article class="card offer"><div class="offer-head"><div><h3>${k.title}</h3><p class="sub">${k.ngo} · donație în natură · ${roDate(k.at)}</p></div><div style="display:grid;gap:.4rem;justify-items:end"><span class="amt">${eur(k.value, 0)}</span><span class="pill ok">Donat gratuit</span></div></div>
+      <p class="why">Mulțumim! Livrezi produsele la ONG; după confirmare, apari în raportul donatorilor ca furnizor-erou.</p></article>`);
+    for (const id of bids) {
+      const a = byA[id], b = S.bids[id], r = S.results[id], c = S.contracts[id];
+      let pill, extra = '', stage = 0;
+      if (!r) { pill = '<span class="pill hold">În așteptare</span>'; extra = `<p class="why">Licitația se închide pe ${roDate(closesOn(a))}. ${a.rivals.length ? 'Ai ' + rivalWord(a.rivals.length) + '.' : 'Ești singurul ofertant.'}</p>`; }
+      else if (r.winner === 'me') {
+        stage = 1 + c.stage;
+        pill = c.stage === 2 ? '<span class="pill ok">Plătit</span>' : c.stage === 1 ? '<span class="pill hold">Așteaptă confirmarea ONG</span>' : '<span class="pill ok">Câștigată</span>';
+        const steps = STEPS.map((t, i) => { const cls = i < stage || (i === stage && stage === 3) ? 'done' : i === stage ? 'now' : 'todo';
+          return `<li class="${cls}">${cls === 'done' ? '<span class="dot">✓</span>' : cls === 'now' ? '<span class="dot wait">•</span>' : `<span class="dot todo">${i + 1}</span>`}<span class="t"><strong>${t}</strong></span><span class="d"></span></li>`; }).join('');
+        const act = c.stage === 0 ? `<button class="btn btn--main btn--sm" type="button" data-deliver="${id}">Am livrat</button>`
+          : c.stage === 1 ? `<button class="btn btn--ghost btn--sm" type="button" data-confirm="${id}">Demo: ONG-ul confirmă primirea</button>`
+          : `<span class="muted" style="font-size:.92rem">Plata de ${eur(b.price)} a intrat în contul firmei.</span>`;
+        extra = `<ol class="timeline">${steps}</ol><div class="don-actions">${act}</div>`;
+      } else {
+        pill = '<span class="pill mid">Nu ai câștigat</span>';
+        extra = `<div class="why"><b>A câștigat ${r.name} (${eur(r.price)}).</b> Clasament: ${r.ranked.map((x, i) => `${i + 1}. ${x.me ? 'Tu' : x.n} ${eur(x.p)}`).join(' · ')}.${r.out.length ? ' Descalificat: ' + r.out.map(o => `${o.n}, ${o.why}`).join('; ') + '.' : ''}</div>`;
+      }
+      rows.push(`<article class="card offer"><div class="offer-head"><div><h3>${a.title}</h3><p class="sub">${a.ngo} · ofertat pe ${roDate(b.at)}</p></div><div style="display:grid;gap:.4rem;justify-items:end"><span class="amt">${eur(b.price)}${a.monthly ? '<span class="muted" style="font-size:.8rem">/lună</span>' : ''}</span>${pill}</div></div>${extra}</article>`);
+    }
+    $('[data-olist]').innerHTML = rows.length ? rows.join('') : '<p class="card empty">Încă nu ai trimis nicio ofertă. <a href="#licitatii">Vezi licitațiile active</a>.</p>';
+  }
+  document.addEventListener('click', e => {
+    const d = e.target.closest('[data-deliver]'), c = e.target.closest('[data-confirm]');
+    if (d) { S.contracts[d.dataset.deliver].stage = 1; save(); renderAll(); toast('Livrare marcată. Așteptăm confirmarea ONG-ului.'); }
+    if (c) {
+      const id = c.dataset.confirm, a = byA[id]; S.contracts[id].stage = 2; S.paid = round2(S.paid + S.bids[id].price);
+      notify({ kind: 'pay', title: `${a.ngo} a confirmat primirea`, text: `${a.title} · ai primit ${eur(S.bids[id].price)} în contul firmei`, go: id });
+      save(); renderAll(); ringBell();
+      toast(`Notificare nouă: ${a.ngo} a confirmat primirea. ${eur(S.bids[id].price)} au intrat în contul firmei.`);
+    }
+  });
+
+  /* ---------- navigare ---------- */
+  function renderAll() { checkNewlyOpened(); renderBiz(); renderAuctions(); renderOffers(); renderBell(); }
+  function route() {
+    const v = location.hash === '#oferte' ? 'oferte' : 'licitatii';
+    $('#view-licitatii').hidden = v !== 'licitatii'; $('#view-oferte').hidden = v !== 'oferte';
+    $$('[data-tab]').forEach(a => a.dataset.tab === v ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'));
+    scrollTo({ top: 0 });
+  }
+  addEventListener('hashchange', route);
+  addEventListener('storage', e => { if (e.key === DONOR_KEY) renderAll(); });
+  addEventListener('focus', renderAll);
+  $('[data-reset]').addEventListener('click', () => { S = seed(); save(); renderAll(); location.hash = '#licitatii'; toast('Demo resetat.'); });
+
+  renderAll(); route();
+})();
+</script>
+</body>
+</html>
