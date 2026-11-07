@@ -191,15 +191,20 @@
       const tags = `<span class="pill mid">${c.cat}</span>` + (c.urgent ? '<span class="pill urgent">Urgent</span>' : '') +
         (c.monthly ? '<span class="pill hold">Nevoie lunară</span>' : '') + (c.sub ? '<span class="pill ok">Acceptă donație lunară</span>' : '');
       return `<article class="card cause reveal" style="--d:${i}">
-        <div class="tags">${tags}</div>
-        <div><p class="ngo">${c.ngo}</p><h3>${c.title}</h3></div>
-        <p class="desc">${c.desc}</p>
-        <div style="display:grid;gap:.4rem">
-          <div class="meter" role="img" aria-label="${pct(c.id)}% strâns"><i style="width:${pct(c.id)}%"></i></div>
-          <div class="nums"><span><span class="mono">${eur(S.funded[c.id], 0)}</span> <span class="muted">din ${eur(c.target, 0)}${c.monthly ? ' pe lună' : ''}</span></span><span class="muted">Termen: ${deadlineTxt(c)}</span></div>
+        <div class="cause-media">
+          <img src="assets/causes/${c.id}.jpg" alt="" width="960" height="540" loading="lazy" decoding="async">
+          <div class="tags">${tags}</div>
         </div>
-        <div class="foot"><span class="muted">${S.donors[c.id]} donatori</span>
-          ${done ? '<span class="pill ok">Finanțată complet</span>' : `<button class="btn btn--main btn--sm" type="button" data-donate="${c.id}">Donează aici</button>`}
+        <div class="cause-body">
+          <div><p class="ngo">${c.ngo}</p><h3>${c.title}</h3></div>
+          <p class="desc">${c.desc}</p>
+          <div style="display:grid;gap:.4rem">
+            <div class="meter" role="img" aria-label="${pct(c.id)}% strâns"><i style="width:${pct(c.id)}%"></i></div>
+            <div class="nums"><span><span class="mono">${eur(S.funded[c.id], 0)}</span> <span class="muted">din ${eur(c.target, 0)}${c.monthly ? ' pe lună' : ''}</span></span><span class="muted">Termen: ${deadlineTxt(c)}</span></div>
+          </div>
+          <div class="foot"><span class="muted">${S.donors[c.id]} donatori</span>
+            ${done ? '<span class="pill ok">Finanțată complet</span>' : `<button class="btn btn--main btn--sm" type="button" data-donate="${c.id}">Donează aici</button>`}
+          </div>
         </div>
       </article>`;
     }).join('');
