@@ -48,6 +48,10 @@
           </div>
           <div class="limbar" aria-hidden="true"><i data-w-bar-av></i><b data-w-bar-lk></b></div>
           <span class="lim">Limită de deținere: <span class="mono">3.000,00&nbsp;€</span></span>
+          <div class="account-nums account-score">
+            <div><span class="muted">Puncte de impact</span><span class="mono"><span data-w-pts></span>&nbsp;p</span></div>
+            <div><span class="muted">Clasamentul lunii</span><span class="mono" data-w-rank></span></div>
+          </div>
         </div>
       </div>
     </section>
@@ -162,7 +166,12 @@
   const deadlineTxt = c => c.deadlineTxt || new Date(c.deadline).toLocaleDateString('ro-RO');
 
   /* ---------- portofel ---------- */
+  // aceiași donatori ca în clasamentul de pe pagina de prezentare: Ana P., Mihai D., Echipa Birou Cluj
+  const PEERS = [142, 103, 97];
+  const rank = () => 1 + PEERS.filter(p => p > S.points).length;
   function renderWallet() {
+    $('[data-w-pts]').textContent = S.points;
+    $('[data-w-rank]').textContent = `Locul ${rank()} din ${PEERS.length + 1}`;
     $$('[data-w-av]').forEach(e => e.textContent = eur(S.wallet.available));
     $$('[data-w-lk]').forEach(e => e.textContent = eur(S.wallet.locked));
     $('[data-w-bar-av]').style.width = (S.wallet.available / LIMIT * 100).toFixed(2) + '%';
