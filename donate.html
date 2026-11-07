@@ -1,0 +1,729 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GiveEU · Donează</title>
+<script>document.documentElement.classList.add('js')</script>
+<style>
+/* Aplicația donatorului (utilizator deja conectat): cauze, flux de plată din portofelul de euro digital, mulțumire, donațiile mele.
+   Tokenii și componentele sunt aceiași ca în index.html: fundal alb, albastru UE, accente galbene, Arial. */
+:root{
+  --bg:#ffffff; --surface:#ffffff; --band:#f2f5f9; --ink:#1f2430; --muted:#4f5563; --line:#d4d9e1;
+  --accent:#004494; --accent-soft:#e3ecf7; --on-accent:#ffffff; --gold:#ffd617; --hold:#7a5c00; --hold-soft:#fff5c7; --bad:#d0021b;
+  --deep:#003399; --deep-ink:#ffffff; --deep-muted:#d0dbf3;
+  --display:Arial,Helvetica,sans-serif;
+  --body:Arial,Helvetica,sans-serif;
+  --mono:Arial,Helvetica,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1.0625rem/1.6 var(--body)}
+h1,h2,h3,p,ul,ol,dl,dd,figure{margin:0}
+ul,ol{padding:0;list-style:none}
+a{color:var(--accent)}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+[hidden]{display:none!important}
+.band{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:3rem}
+.wrap{max-width:68rem;margin-inline:auto}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:clamp(2rem,5vw,3rem);line-height:1.08;font-weight:700}
+h2{font-size:clamp(1.5rem,3.6vw,2rem);line-height:1.15;font-weight:700}
+h3{font-size:1.2rem;font-weight:700;line-height:1.3}
+.muted{color:var(--muted)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.label{font:700 .78rem/1.2 var(--body);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:3rem;padding:0 1.35rem;border-radius:4px;border:0;font-weight:700;text-decoration:none;cursor:pointer;transition:filter .15s,transform .15s;background:none}
+.btn--main{background:var(--accent);color:var(--on-accent)}
+.btn--main:hover{filter:brightness(1.12)}
+.btn--ghost{border:1.5px solid var(--ink);color:var(--ink)}
+.btn--ghost:hover{background:var(--band)}
+.btn--quiet{color:var(--accent);padding:0 .75rem;min-height:2.5rem}
+.btn[disabled]{opacity:.45;cursor:not-allowed;filter:none}
+.btn--sm{min-height:2.5rem;padding:0 1rem;font-size:.95rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:6px}
+.pill{display:inline-flex;align-items:center;gap:.35rem;font:700 .78rem/1 var(--body);padding:.4rem .6rem;border-radius:4px;white-space:nowrap}
+.pill.ok{background:var(--accent-soft);color:var(--accent)}
+.pill.hold{background:var(--hold-soft);color:var(--hold)}
+.pill.no{background:color-mix(in srgb,var(--bad) 12%,transparent);color:var(--bad)}
+.pill.mid{background:var(--band);color:var(--muted);border:1px solid var(--line)}
+.meter{height:.6rem;border-radius:999px;background:var(--line);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--accent);border-radius:999px;transition:width .9s cubic-bezier(.2,.7,.2,1)}
+
+/* antet aplicație */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-top:4px solid var(--accent);border-bottom:1px solid var(--line);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:.75rem}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:21;background:var(--bg)}
+.top .wrap{display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.logo{font:700 1.4rem/1 var(--display);color:var(--ink);text-decoration:none}
+.logo span{background:#003399;color:#ffd617;padding:.15rem .35rem;margin-left:.12rem;border-radius:3px}
+.tabs{display:flex;gap:.25rem;margin-right:auto;margin-left:.75rem}
+.tabs a{padding:.5rem .85rem;border-radius:4px;color:var(--muted);text-decoration:none;font-weight:700;font-size:.95rem}
+.tabs a:hover{color:var(--ink);background:var(--band)}
+.tabs a[aria-current="page"]{background:var(--accent-soft);color:var(--accent)}
+.walletchip{display:flex;align-items:center;gap:.6rem;padding:.35rem .5rem .35rem .85rem;border:1px solid var(--line);border-radius:4px;background:var(--surface);font-size:.9rem}
+.walletchip .mono{font-size:.95rem}
+.avatar{width:2.1rem;height:2.1rem;border-radius:50%;display:grid;place-items:center;background:#003399;color:#ffd617;font:700 .85rem/1 var(--display)}
+@media (max-width:700px){.walletchip .wl-locked{display:none}.tabs{margin-left:0;order:3;width:100%}}
+
+/* cap de pagină */
+.intro-band{background:var(--band);border-bottom:1px solid var(--line)}
+.hello{display:grid;gap:1.5rem;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);align-items:end}
+@media (max-width:820px){.hello{grid-template-columns:minmax(0,1fr)}}
+.hello p{color:var(--muted);font-size:1.1rem;max-width:34rem;margin-top:.6rem}
+.wallet{padding:1.25rem 1.4rem;display:grid;gap:.85rem;border-top:4px solid var(--gold)}
+.wallet-head{display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.wallet-nums{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.wallet-nums div{display:grid;gap:.15rem}
+.wallet-nums .mono{font-size:1.45rem;line-height:1.2;font-weight:700}
+.wallet .lim{font-size:.85rem;color:var(--muted)}
+.limbar{display:flex;height:.45rem;border-radius:999px;background:var(--line);overflow:hidden}
+.limbar i{background:var(--accent)}
+.limbar b{background:var(--gold)}
+
+/* cauze */
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-block:0 1.25rem}
+.chip{min-height:2.5rem;padding:0 1rem;border-radius:4px;border:1.5px solid var(--line);background:var(--surface);cursor:pointer;font-weight:700;font-size:.92rem;color:var(--ink)}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.causes{display:grid;gap:1.25rem;grid-template-columns:repeat(auto-fill,minmax(18.5rem,1fr))}
+.cause{padding:1.4rem;display:flex;flex-direction:column;gap:.75rem;position:relative;border-top:4px solid var(--accent)}
+.cause .tags{display:flex;flex-wrap:wrap;gap:.4rem}
+.cause .ngo{font-size:.9rem;color:var(--muted)}
+.cause p.desc{color:var(--muted);font-size:.98rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cause .nums{display:flex;justify-content:space-between;gap:1rem;font-size:.9rem;flex-wrap:wrap}
+.cause .nums .mono{font-weight:700}
+.cause .foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-top:.4rem}
+.cause .foot .muted{font-size:.88rem}
+.pill.urgent{background:var(--bad);color:#fff}
+
+/* animația butonului */
+.btn.press{transform:scale(.93)}
+.flycoin{position:fixed;z-index:60;width:2.2rem;height:2.2rem;margin:-1.1rem 0 0 -1.1rem;border-radius:50%;background:var(--gold);color:#003399;border:2px solid var(--hold);display:grid;place-items:center;font:700 1.1rem/1 var(--display);pointer-events:none;
+  box-shadow:0 6px 14px -4px color-mix(in srgb,var(--ink) 50%,transparent);animation:flycoin .55s cubic-bezier(.3,.7,.3,1) forwards}
+@keyframes flycoin{0%{transform:translateY(0) scale(.6);opacity:0}25%{opacity:1}100%{transform:translateY(-90px) scale(1.15) rotate(25deg);opacity:0}}
+
+/* panoul de plată */
+dialog.drawer{position:fixed;inset:0 0 0 auto;margin:0;width:min(31rem,100%);height:100%;max-height:none;max-width:none;border:0;border-left:1px solid var(--line);padding:0;background:var(--surface);color:var(--ink);overflow:hidden}
+dialog.drawer[open]{display:flex;flex-direction:column;animation:slidein .32s cubic-bezier(.2,.7,.2,1)}
+dialog::backdrop{background:color-mix(in srgb,#0b1a3a 45%,transparent);backdrop-filter:blur(2px)}
+@keyframes slidein{from{transform:translateX(100%)}to{transform:none}}
+.d-head{padding:1rem 1.25rem .9rem;border-top:4px solid var(--accent);border-bottom:1px solid var(--line);display:grid;gap:.75rem}
+.d-head .row{display:flex;justify-content:space-between;align-items:center;gap:1rem}
+.d-head .cause-t{font:700 1rem/1.3 var(--display)}
+.x{width:2.5rem;height:2.5rem;border-radius:4px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-size:1.2rem;line-height:1;flex:none}
+.x:hover{background:var(--band)}
+.stepbar{display:grid;grid-template-columns:repeat(3,1fr);gap:.35rem}
+.walletline{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.9rem 1.1rem;border-radius:6px;border:1px solid var(--line);background:var(--band);font-size:.95rem}
+.spin{width:1.1rem;height:1.1rem;border-radius:50%;border:2.5px solid color-mix(in srgb,var(--deep-ink) 30%,transparent);border-top-color:var(--gold);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.stepbar i{height:.3rem;border-radius:999px;background:var(--line);transition:background .3s}
+.stepbar i.on{background:var(--accent)}
+.d-body{flex:1;overflow:auto;padding:1.5rem 1.25rem;display:grid;gap:1.25rem;align-content:start;position:relative}
+.d-body h2{font-size:1.6rem}
+.d-body .lead{color:var(--muted)}
+.d-foot{padding:1rem 1.25rem calc(1rem + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:.75rem}
+.d-foot .btn--main{flex:1}
+.amts{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem}
+.amts label{position:relative}
+.amts input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.amts span{display:grid;place-items:center;min-height:3.25rem;border-radius:4px;border:1.5px solid var(--line);font:700 1.1rem/1 var(--mono);background:var(--surface)}
+.amts input:checked+span{border-color:var(--accent);background:var(--accent);color:var(--on-accent)}
+.amts input:focus-visible+span{outline:3px solid var(--accent);outline-offset:2px}
+.field{display:grid;gap:.35rem}
+.field label{font-weight:700;font-size:.92rem}
+.field input,.field select{min-height:3rem;border-radius:4px;border:1.5px solid var(--line);background:var(--surface);padding:0 .9rem}
+.field input:focus,.field select:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
+.field input{font:400 1.15rem/1 var(--mono)}
+.equiv{padding:1rem 1.1rem;border-radius:6px;background:var(--accent-soft);color:var(--ink);display:flex;gap:.75rem;align-items:center}
+.equiv b{color:var(--accent)}
+.equiv .ill{flex:none;width:40px;height:40px}
+.note{font-size:.92rem;color:var(--muted)}
+.warn{font-size:.93rem;padding:.85rem 1rem;border-radius:4px;background:color-mix(in srgb,var(--bad) 8%,transparent);border:1px solid color-mix(in srgb,var(--bad) 35%,transparent)}
+.sum{display:grid;gap:0}
+.sum div{display:flex;justify-content:space-between;gap:1rem;padding:.6rem 0;border-bottom:1px dashed var(--line);font-size:.97rem}
+.sum div:last-child{border-bottom:0}
+.sum dt{color:var(--muted)}
+.sum dd{text-align:right;font-weight:700}
+.how{display:grid;gap:.65rem}
+.how li{display:grid;grid-template-columns:1.6rem 1fr;gap:.6rem;font-size:.97rem}
+.how li span{width:1.6rem;height:1.6rem;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--on-accent);font:700 .8rem/1 var(--display)}
+.radios{border:0;padding:0;margin:0;display:grid;gap:.35rem}
+.radios legend{font-weight:700;font-size:.95rem;margin-bottom:.25rem;padding:0}
+.radios label{display:flex;gap:.6rem;align-items:center;min-height:2.4rem;cursor:pointer}
+.radios input,.agree input{width:1.15rem;height:1.15rem;accent-color:var(--accent);margin:0;flex:none}
+.agree{display:flex;gap:.7rem;align-items:flex-start;padding:1rem;border-radius:6px;border:1.5px solid var(--line);cursor:pointer;font-size:.97rem}
+.agree:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.agree input{margin-top:.2rem}
+
+/* autorizare */
+.walletapp{border-radius:10px;padding:1.4rem;background:var(--deep);color:var(--deep-ink);display:grid;gap:1rem;box-shadow:0 20px 40px -24px #001a4d}
+.walletapp .label{color:var(--deep-muted)}
+.walletapp .big{font:700 2.2rem/1 var(--mono)}
+.walletapp dl{display:grid;grid-template-columns:auto 1fr;gap:.35rem 1rem;font-size:.92rem}
+.walletapp dt{color:var(--deep-muted)}
+.walletapp dd{text-align:right}
+.auth{display:grid;justify-items:center;gap:.9rem;padding-block:.5rem;text-align:center}
+.lockwrap{display:grid;place-items:center;height:9rem;position:relative}
+.lockwrap svg{width:110px;height:130px;overflow:visible}
+.lockwrap .shackle{transform:translateY(-16px);transition:transform .45s cubic-bezier(.5,1.6,.5,1) .45s}
+.lockwrap.shut .shackle{transform:none}
+.lockwrap .dropcoin{transform:translateY(-70px);opacity:0;transition:transform .45s cubic-bezier(.4,0,.6,1),opacity .2s}
+.lockwrap.shut .dropcoin{transform:translateY(0);opacity:1}
+
+/* mulțumire */
+.thanks{text-align:center;justify-items:center}
+.thanks .seal{width:5.5rem;height:5.5rem;border-radius:50%;background:var(--accent);color:var(--on-accent);box-shadow:0 0 0 6px var(--gold);display:grid;place-items:center;animation:popin .6s cubic-bezier(.3,1.6,.5,1)}
+.thanks .seal svg{width:2.6rem;height:2.6rem}
+@keyframes popin{from{transform:scale(.3);opacity:0}}
+.thanks h2{font-size:clamp(1.9rem,6vw,2.4rem)}
+.impact{font-size:1.15rem;max-width:24rem}
+.impact b{color:var(--accent)}
+.progress-ba{width:100%;text-align:left;display:grid;gap:.5rem;padding:1.1rem;border-radius:6px;border:1px solid var(--line)}
+.progress-ba .row{display:flex;justify-content:space-between;gap:1rem;font-size:.93rem}
+.meter.ba{height:.8rem;display:flex}
+.meter.ba i{border-radius:0}
+.meter.ba b{display:block;height:100%;background:var(--gold);transition:width 1.1s cubic-bezier(.2,.7,.2,1) .35s}
+.earned{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center}
+.earned span{font-size:.9rem;padding:.45rem .8rem;border-radius:4px;border:1px solid var(--line);background:var(--band)}
+.earned span.new{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:700}
+.closed{padding:.9rem 1rem;border-radius:6px;background:var(--hold-soft);color:var(--ink);border:1px solid color-mix(in srgb,var(--hold) 35%,transparent);font-weight:700}
+.confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.confetti i{position:absolute;top:-24px;width:10px;height:14px;border-radius:2px;animation:fall var(--t,1.8s) cubic-bezier(.3,.6,.5,1) var(--dl,0s) forwards}
+.confetti i.c{width:20px;height:20px;border-radius:50%;background:var(--gold);color:#003399;font:700 11px/20px var(--display);text-align:center}
+@keyframes fall{0%{transform:translate3d(0,0,0) rotate(0)}100%{transform:translate3d(var(--x,0),110vh,0) rotate(var(--r,540deg))}}
+
+/* donațiile mele */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:1rem;margin-top:1.75rem}
+.stat{padding:1.1rem 1.25rem;display:grid;gap:.2rem;border-top:4px solid var(--accent)}
+.stat .mono{font-size:1.6rem;line-height:1.2;font-weight:700}
+.dlist{display:grid;gap:1rem;margin-top:1.5rem}
+.don{padding:1.25rem 1.4rem;display:grid;gap:1rem}
+.don.fresh{animation:fresh 2.2s ease}
+@keyframes fresh{0%,30%{box-shadow:0 0 0 3px var(--gold)}100%{box-shadow:0 0 0 0 transparent}}
+.don-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.25rem 1rem;align-items:start}
+.don-head .amt{font:700 1.5rem/1.1 var(--mono);text-align:right}
+.don-head .sub{font-size:.9rem;color:var(--muted)}
+.don-head .pill{justify-self:end}
+.don-toggle{justify-self:start}
+.timeline{display:grid;gap:0}
+.timeline li{display:grid;grid-template-columns:1.5rem 1fr auto;gap:.85rem;align-items:start;position:relative;padding-bottom:1rem}
+.timeline li:last-child{padding-bottom:0}
+.timeline li::after{content:"";position:absolute;left:calc(.75rem - 1px);top:1.5rem;bottom:0;width:2px;background:var(--line)}
+.timeline li.done::after{background:var(--accent)}
+.timeline li:last-child::after{display:none}
+.dot{width:1.5rem;height:1.5rem;border-radius:50%;display:grid;place-items:center;font-size:.8rem;font-weight:700;background:var(--accent);color:var(--on-accent);position:relative;z-index:1}
+.dot.wait{background:var(--hold-soft);color:var(--hold);border:1.5px solid var(--hold)}
+.dot.todo{background:var(--surface);border:1.5px solid var(--line);color:var(--muted)}
+.timeline .t{display:grid;gap:.1rem;min-width:0}
+.timeline .t strong{font-weight:700}
+.timeline li.todo .t strong{color:var(--muted);font-weight:400}
+.timeline .t span{font-size:.9rem;color:var(--muted)}
+.timeline .d{font:400 .82rem/1.6 var(--mono);color:var(--muted)}
+.don-actions{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.empty{padding:2rem;text-align:center;color:var(--muted)}
+
+/* chitanța */
+dialog.receipt{border:0;padding:0;border-radius:8px;border-top:4px solid var(--accent);width:min(30rem,calc(100% - 32px));max-height:calc(100% - 32px);background:var(--surface);color:var(--ink)}
+dialog.receipt[open]{animation:popin .35s cubic-bezier(.3,1.3,.5,1)}
+.rc{padding:1.5rem;display:grid;gap:1rem}
+.rc-row{display:flex;justify-content:space-between;gap:1rem;padding:.55rem 0;border-bottom:1px dashed var(--line)}
+.rc-row .mono{white-space:nowrap;font-weight:700}
+.photos{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}
+.photos figure{aspect-ratio:4/3;border-radius:4px;background:var(--accent-soft);display:grid;place-items:center;position:relative;color:var(--accent)}
+.photos figcaption{position:absolute;left:.35rem;bottom:.35rem;font-size:.72rem;font-weight:700;background:var(--surface);color:var(--accent);padding:.15rem .4rem;border-radius:3px}
+
+footer{border-top:1px solid var(--line);font-size:.88rem;color:var(--muted);padding-block:2rem 3rem;margin-top:2rem}
+footer .wrap{display:flex;flex-wrap:wrap;gap:.75rem 2rem;justify-content:space-between;align-items:center}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.js .reveal{opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .6s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--d,0)*60ms)}
+.js .reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="index.html" aria-label="GiveEU, pagina de prezentare">Give<span>EU</span></a>
+    <nav class="tabs" aria-label="Aplicație">
+      <a href="#cauze" data-tab="cauze">Cauze</a>
+      <a href="#donatii" data-tab="donatii">Donațiile mele</a>
+    </nav>
+    <div class="walletchip" aria-label="Portofelul tău de euro digital">
+      <span><span class="sr">Disponibil: </span><span class="mono" data-w-av></span></span>
+      <span class="pill hold wl-locked"><span aria-hidden="true">🔒</span><span class="mono" data-w-lk></span></span>
+      <span class="avatar" title="Andrei M." aria-label="Conectat ca Andrei M.">AM</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- CAUZE -->
+  <div id="view-cauze">
+    <section class="band intro-band" aria-labelledby="h-cauze">
+      <div class="wrap hello">
+        <div>
+          <span class="label">Bună, Andrei</span>
+          <h1 id="h-cauze" style="margin-top:.4rem">Unde vrei să ajuți azi?</h1>
+          <p>Alegi o cauză și suma. Banii rămân blocați în portofelul tău până când ONG-ul confirmă că a primit produsele.</p>
+        </div>
+        <div class="card wallet" aria-label="Portofel euro digital">
+          <div class="wallet-head"><span class="label">Portofel euro digital</span><span class="pill ok">Conectat</span></div>
+          <div class="wallet-nums">
+            <div><span class="muted" style="font-size:.88rem">Disponibil</span><span class="mono" data-w-av></span></div>
+            <div><span class="muted" style="font-size:.88rem">Blocat în cauze</span><span class="mono" style="color:var(--hold)" data-w-lk></span></div>
+          </div>
+          <div class="limbar" aria-hidden="true"><i data-w-bar-av></i><b data-w-bar-lk></b></div>
+          <span class="lim">Limită de deținere: <span class="mono">3.000,00 €</span></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" aria-label="Cauze deschise">
+      <div class="wrap">
+        <div class="chips" role="group" aria-label="Filtrează după nevoie" data-chips></div>
+        <div class="causes" data-causes></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- DONAȚIILE MELE -->
+  <section class="band" id="view-donatii" aria-labelledby="h-don" hidden>
+    <div class="wrap">
+      <span class="label">Donațiile mele</span>
+      <h1 id="h-don" style="margin-top:.4rem">Fiecare euro, urmărit până la destinație</h1>
+      <div class="stats" data-stats></div>
+      <ul class="dlist" data-dlist></ul>
+    </div>
+  </section>
+</main>
+
+<footer class="band" style="padding-block:2rem 3rem">
+  <div class="wrap">
+    <span><strong style="color:var(--ink)">GiveEU</strong> · prototip pentru hackathonul Pixel 5.0, noiembrie 2026. Euro digital, plățile, numele și sumele sunt simulate. Nu e un serviciu oficial al Uniunii Europene.</span>
+    <button class="btn btn--ghost btn--sm" type="button" data-reset>Reset demo</button>
+  </div>
+</footer>
+
+<!-- PANOUL DE PLATĂ -->
+<dialog class="drawer" id="pay" aria-labelledby="pay-title">
+  <div class="d-head">
+    <div class="row">
+      <div style="min-width:0"><span class="label" data-p-step>Pasul 1 din 4</span><p class="cause-t" data-p-cause></p></div>
+      <button class="x" type="button" data-p-close aria-label="Închide">×</button>
+    </div>
+    <div class="stepbar" aria-hidden="true"><i></i><i></i><i></i></div>
+  </div>
+  <div class="d-body" data-p-body aria-live="polite"></div>
+  <div class="d-foot" data-p-foot>
+    <button class="btn btn--ghost" type="button" data-p-back>Înapoi</button>
+    <button class="btn btn--main" type="button" data-p-next>Continuă</button>
+  </div>
+</dialog>
+
+<!-- CHITANȚA -->
+<dialog class="receipt" id="receipt" aria-labelledby="rc-title">
+  <div class="rc" data-rc></div>
+</dialog>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const $ = (s, c = document) => c.querySelector(s);
+  const $$ = (s, c = document) => [...c.querySelectorAll(s)];
+  const eur = (n, d = 2) => n.toLocaleString('ro-RO', { minimumFractionDigits: d, maximumFractionDigits: d }) + ' €';
+  const round2 = n => Math.round(n * 100) / 100;
+  const fmtDate = iso => new Date(iso).toLocaleDateString('ro-RO', { day: 'numeric', month: 'short' }).replace('.', '');
+  const wait = ms => new Promise(r => setTimeout(r, reduce.matches ? Math.min(ms, 250) : ms));
+  // „20 de cutii”, „3 cutii”, „1 cutie”
+  const qty = (n, one, many) => n === 1 ? '1 ' + one : (n % 100 >= 20 || (n >= 100 && n % 100 === 0)) ? n + ' de ' + many : n + ' ' + many;
+
+  /* ---------- date demo (toate fictive) ---------- */
+  const CAUSES = [
+    { id:'apa', cat:'Urgențe', urgent:true, ngo:'Asociația Crucea Văii', title:'500 de baxuri de apă plată', desc:'Familiile din comuna Râușor au rămas fără apă potabilă după inundații.', target:900, deadline:'2026-11-12', deadlineTxt:'în 5 zile', unit:1.8, one:'bax de apă', many:'baxuri de apă', part:'un bax de apă', for:'pentru familiile din Râușor', supplier:'Izvorul Munților' },
+    { id:'paracetamol', cat:'Sănătate', ngo:'Asociația „Lacrimile Caprelor Negre”', title:'100 de cutii de paracetamol', desc:'Pentru cabinetul medical din satul Valea Brazilor, unde cea mai apropiată farmacie e la 40 km.', target:250, deadline:'2026-12-15', unit:2.5, one:'cutie de paracetamol', many:'cutii de paracetamol', part:'o cutie de paracetamol', for:'pentru cabinetul medical din Valea Brazilor', supplier:'FarmaVita' },
+    { id:'craciun', cat:'Copii', sub:true, ngo:'Fundația Casa Copiilor', title:'100 de pachete de Crăciun', desc:'Dulciuri și jucării pentru copiii din centrele de plasament. Distribuim pe 20 decembrie.', target:800, deadline:'2026-12-20', unit:8, one:'pachet de Crăciun', many:'pachete de Crăciun', part:'un pachet de Crăciun', for:'pentru copiii din centrele de plasament', supplier:'Piața Locală SRL' },
+    { id:'bucatarie', cat:'Alimente', sub:true, monthly:true, ngo:'Bucătăria Solidară', title:'60 de prânzuri calde pe zi', desc:'Alimente de bază pentru vârstnici singuri. Nevoia se repetă în fiecare lună.', target:1500, deadline:'2026-11-30', deadlineTxt:'lunar', unit:0.83, one:'prânz cald', many:'prânzuri calde', part:'un prânz cald', for:'pentru vârstnicii de la Bucătăria Solidară', supplier:'Piața Locală SRL' },
+    { id:'paturi', cat:'Vârstnici', ngo:'Asociația „Seniori, Nu Singuri”', title:'50 de pături și termofoare', desc:'Pentru vârstnici care locuiesc singuri la munte, înainte de primul ger.', target:750, deadline:'2026-12-05', unit:15, one:'set de pătură și termofor', many:'seturi de pătură și termofor', part:'un set de pătură și termofor', for:'pentru vârstnicii singuri de la munte', supplier:'Textila Carpați' },
+    { id:'hrana', cat:'Animale', ngo:'Adăpostul „Patru Lăbuțe”', title:'300 kg de hrană pentru câini', desc:'Pentru 85 de câini salvați, cât să treacă iarna.', target:600, deadline:'2026-12-10', unit:2, one:'kg de hrană', many:'kg de hrană', part:'un kg de hrană', for:'pentru cei 85 de câini de la adăpost', supplier:'PetFarm' },
+    { id:'ghiozdane', cat:'Educație', ngo:'Asociația „Pași Mici”', title:'40 de ghiozdane echipate', desc:'Pentru elevii din clasele I–IV dintr-o comună fără librărie.', target:1200, deadline:'2027-09-01', unit:30, one:'ghiozdan echipat', many:'ghiozdane echipate', part:'un ghiozdan echipat', for:'pentru elevii din clasele I–IV', supplier:'Librăria Alfabet' }
+  ];
+  const byId = Object.fromEntries(CAUSES.map(c => [c.id, c]));
+  const CATS = ['Toate', 'Urgențe', 'Sănătate', 'Copii', 'Alimente', 'Vârstnici', 'Animale', 'Educație'];
+  const STAGES = [
+    ['Bani blocați', 'Stau în portofelul tău, rezervați pentru această cauză'],
+    ['Cauză finanțată', 'Cauza a strâns toată suma necesară'],
+    ['Companie aleasă de ONG', 'ONG-ul a ales cine cumpără și livrează'],
+    ['Livrare confirmată', 'ONG-ul a primit produsele și a încărcat poze'],
+    ['Plată eliberată', 'Abia acum banii au plecat din portofelul tău'],
+    ['Chitanță de impact', 'Ce s-a cumpărat, de la cine și cu cât']
+  ];
+  const LIMIT = 3000;
+
+  const seed = () => ({
+    wallet: { available: 1250, locked: 70 },
+    funded: { apa:610, paracetamol:95, craciun:372, bucatarie:1300, paturi:180, hrana:510, ghiozdane:430 },
+    donors: { apa:41, paracetamol:9, craciun:23, bucatarie:31, paturi:6, hrana:27, ghiozdane:14 },
+    points: 118,
+    donations: [
+      { id:'d3', cause:'apa', eur:20, left:'cauza', stage:0, dates:['2026-11-06T19:12:00'] },
+      { id:'d2', cause:'craciun', eur:50, left:'cauza', stage:2, dates:['2026-11-02T10:05:00','2026-11-04T16:40:00','2026-11-05T09:15:00'] },
+      { id:'d1', cause:'hrana', eur:30, left:'cauza', stage:5, dates:['2026-10-12T18:30:00','2026-10-14T12:00:00','2026-10-15T09:00:00','2026-10-18T14:20:00','2026-10-18T14:21:00','2026-10-18T14:22:00'],
+        receipt:{ items:15, paid:27, rest:3 } }
+    ]
+  });
+  const KEY = 'giveeu-demo-v1';
+  let S;
+  try { S = JSON.parse(localStorage.getItem(KEY)) || seed(); } catch { S = seed(); }
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch {} };
+  const pct = id => Math.min(100, Math.round(S.funded[id] / byId[id].target * 100));
+  const missing = id => Math.max(0, round2(byId[id].target - S.funded[id]));
+  const deadlineTxt = c => c.deadlineTxt || new Date(c.deadline).toLocaleDateString('ro-RO');
+
+  /* ---------- portofel ---------- */
+  function renderWallet() {
+    $$('[data-w-av]').forEach(e => e.textContent = eur(S.wallet.available));
+    $$('[data-w-lk]').forEach(e => e.textContent = eur(S.wallet.locked));
+    $('[data-w-bar-av]').style.width = (S.wallet.available / LIMIT * 100).toFixed(2) + '%';
+    $('[data-w-bar-lk]').style.width = (S.wallet.locked / LIMIT * 100).toFixed(2) + '%';
+  }
+
+  /* ---------- cauze ---------- */
+  let curCat = 'Toate';
+  const chipsEl = $('[data-chips]'), causesEl = $('[data-causes]');
+  function renderChips() {
+    chipsEl.innerHTML = CATS.map(k => `<button type="button" class="chip" data-cat="${k}" aria-pressed="${k === curCat}">${k}</button>`).join('');
+  }
+  function renderCauses() {
+    const list = CAUSES.filter(c => curCat === 'Toate' || c.cat === curCat);
+    causesEl.innerHTML = list.map((c, i) => {
+      const done = S.funded[c.id] >= c.target;
+      const tags = `<span class="pill mid">${c.cat}</span>` + (c.urgent ? '<span class="pill urgent">Urgent</span>' : '') +
+        (c.monthly ? '<span class="pill hold">Nevoie lunară</span>' : '') + (c.sub ? '<span class="pill ok">Acceptă donație lunară</span>' : '');
+      return `<article class="card cause reveal" style="--d:${i}">
+        <div class="tags">${tags}</div>
+        <div><p class="ngo">${c.ngo}</p><h3>${c.title}</h3></div>
+        <p class="desc">${c.desc}</p>
+        <div style="display:grid;gap:.4rem">
+          <div class="meter" role="img" aria-label="${pct(c.id)}% strâns"><i style="width:${pct(c.id)}%"></i></div>
+          <div class="nums"><span><span class="mono">${eur(S.funded[c.id], 0)}</span> <span class="muted">din ${eur(c.target, 0)}${c.monthly ? ' pe lună' : ''}</span></span><span class="muted">Termen: ${deadlineTxt(c)}</span></div>
+        </div>
+        <div class="foot"><span class="muted">${S.donors[c.id]} donatori</span>
+          ${done ? '<span class="pill ok">Finanțată complet</span>' : `<button class="btn btn--main btn--sm" type="button" data-donate="${c.id}">Donează aici</button>`}
+        </div>
+      </article>`;
+    }).join('');
+    requestAnimationFrame(() => $$('.reveal', causesEl).forEach(e => e.classList.add('in')));
+  }
+  chipsEl.addEventListener('click', e => { const b = e.target.closest('[data-cat]'); if (!b) return; curCat = b.dataset.cat; renderChips(); renderCauses(); });
+  causesEl.addEventListener('click', e => {
+    const b = e.target.closest('[data-donate]'); if (!b) return;
+    if (reduce.matches) { openPay(b.dataset.donate); return; }
+    b.classList.add('press');
+    const r = b.getBoundingClientRect(), coin = document.createElement('span');
+    coin.className = 'flycoin'; coin.textContent = '€'; coin.setAttribute('aria-hidden', 'true');
+    coin.style.left = (r.left + r.width / 2) + 'px'; coin.style.top = (r.top + r.height / 2) + 'px';
+    document.body.appendChild(coin);
+    setTimeout(() => b.classList.remove('press'), 160);
+    setTimeout(() => { coin.remove(); openPay(b.dataset.donate); }, 420);
+  });
+
+  /* ---------- fluxul de plată ---------- */
+  const pay = $('#pay'), pBody = $('[data-p-body]'), pFoot = $('[data-p-foot]'), pBack = $('[data-p-back]'), pNext = $('[data-p-next]');
+  let F = null, busy = false;
+  function openPay(id) {
+    F = { cause: id, step: 1, amount: 25, custom: '', left: 'cauza', agree: false };
+    $('[data-p-cause]').textContent = byId[id].title;
+    renderStep();
+    pay.showModal();
+  }
+  const amountEur = () => round2(F.amount);
+  function equivText(c, e) {
+    const n = Math.floor(e / c.unit + 1e-9);
+    return n >= 1 ? `<b>${qty(n, c.one, c.many)}</b> ${c.for}` : `o parte din <b>${c.part}</b> ${c.for}`;
+  }
+  function setBar() { $$('.stepbar i').forEach((b, i) => b.classList.toggle('on', i < Math.min(F.step, 3))); }
+
+  function renderStep() {
+    const c = byId[F.cause];
+    setBar();
+    $('[data-p-step]').textContent = `Pasul ${F.step} din 3`;
+    pFoot.hidden = F.step >= 3;
+    pBack.hidden = F.step === 1;
+    pNext.disabled = false;
+    if (F.step === 1) {
+      pNext.textContent = 'Continuă';
+      const presets = [10, 25, 50, 100];
+      pBody.innerHTML = `
+        <div><h2 id="pay-title">Cât donezi?</h2><p class="lead">Alegi doar suma. Produsele sunt cele din lista aprobată de ONG.</p></div>
+        <fieldset class="amts" style="border:0;padding:0;margin:0"><legend class="sr">Sume rapide</legend>
+          ${presets.map(v => `<label><input type="radio" name="amt" value="${v}" ${!F.custom && F.amount === v ? 'checked' : ''}><span>${v} €</span></label>`).join('')}
+        </fieldset>
+        <div class="field"><label for="amt-custom">Altă sumă (€)</label><input id="amt-custom" type="number" min="1" step="1" inputmode="decimal" placeholder="ex. 35" value="${F.custom}"></div>
+        <div class="equiv" data-equiv></div>
+        <div class="walletline"><span>Din portofelul de euro digital</span><span>Disponibil: <span class="mono">${eur(S.wallet.available)}</span></span></div>
+        <div class="warn" data-err hidden></div>
+        <p class="note">Cauzei îi mai lipsesc <span class="mono">${eur(missing(F.cause), 0)}</span>.</p>`;
+      const upd = () => {
+        const e = amountEur(), box = $('[data-err]', pBody);
+        $('[data-equiv]', pBody).innerHTML = e > 0 ? `<svg class="ill" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="var(--gold)" stroke="var(--hold)" stroke-width="2"/><text x="20" y="27" text-anchor="middle" fill="#003399" style="font:700 19px var(--display)">€</text></svg><span><span class="mono">${eur(e)}</span> înseamnă ${equivText(c, e)}.</span>` : '<span>Alege o sumă.</span>';
+        const tooMuch = e > S.wallet.available;
+        box.hidden = !tooMuch;
+        box.textContent = tooMuch ? `Ai doar ${eur(S.wallet.available)} disponibili în portofel. Alege o sumă mai mică.` : '';
+        pNext.disabled = !(e > 0) || tooMuch;
+      };
+      $$('input[name=amt]', pBody).forEach(r => r.addEventListener('change', () => { F.amount = +r.value; F.custom = ''; $('#amt-custom').value = ''; upd(); }));
+      $('#amt-custom').addEventListener('input', ev => {
+        F.custom = ev.target.value; const v = parseFloat(F.custom);
+        $$('input[name=amt]', pBody).forEach(r => r.checked = false);
+        F.amount = v > 0 ? round2(v) : 0; upd();
+      });
+      upd();
+    }
+    if (F.step === 2) {
+      pNext.textContent = `Blochează ${eur(amountEur())}`;
+      pBody.innerHTML = `
+        <div><h2 id="pay-title">Verifică și confirmă</h2><p class="lead">Ce se întâmplă cu banii tăi, pe scurt:</p></div>
+        <dl class="sum">
+          <div><dt>Cauza</dt><dd>${c.title}</dd></div>
+          <div><dt>ONG</dt><dd>${c.ngo}</dd></div>
+          <div><dt>Suma</dt><dd class="mono">${eur(amountEur())}</dd></div>
+          <div><dt>Din</dt><dd>Portofelul de euro digital</dd></div>
+          <div><dt>Termen</dt><dd>${deadlineTxt(c)}</dd></div>
+        </dl>
+        <ol class="how">
+          <li><span>1</span><p>Blochezi <b class="mono">${eur(amountEur())}</b> pentru această cauză. Banii rămân în portofelul tău.</p></li>
+          <li><span>2</span><p>Când cauza strânge suma, ONG-ul alege o companie care cumpără și livrează produsele.</p></li>
+          <li><span>3</span><p>Compania e plătită doar după ce ONG-ul confirmă că a primit produsele. Dacă nu se întâmplă până la termen, primești banii înapoi automat.</p></li>
+        </ol>
+        <fieldset class="radios"><legend>Dacă rămân bani după cumpărare</legend>
+          <label><input type="radio" name="left" value="cauza" ${F.left === 'cauza' ? 'checked' : ''}> Rămân la aceeași cauză</label>
+          <label><input type="radio" name="left" value="retur" ${F.left === 'retur' ? 'checked' : ''}> Se întorc la mine</label>
+        </fieldset>
+        <label class="agree"><input type="checkbox" data-agree ${F.agree ? 'checked' : ''}> <span>Am înțeles și sunt de acord să blochez suma în condițiile de mai sus.</span></label>`;
+      $$('input[name=left]', pBody).forEach(r => r.addEventListener('change', () => F.left = r.value));
+      const ag = $('[data-agree]', pBody);
+      pNext.disabled = !F.agree;
+      ag.addEventListener('change', () => { F.agree = ag.checked; pNext.disabled = !F.agree; });
+    }
+  }
+  pNext.addEventListener('click', () => {
+    if (pNext.disabled) return;
+    if (F.step === 2) { lockFunds(); return; }
+    F.step++; renderStep();
+  });
+  pBack.addEventListener('click', () => { F.step = Math.max(1, F.step - 1); renderStep(); });
+  $('[data-p-close]').addEventListener('click', () => { if (!busy) pay.close(); });
+  pay.addEventListener('cancel', e => { if (busy) e.preventDefault(); });
+  pay.addEventListener('click', e => { if (e.target === pay && !busy) pay.close(); });
+
+  // pasul 3: plata condiționată se creează în portofel, apoi lacătul se închide
+  async function lockFunds() {
+    if (busy) return; busy = true;
+    const c = byId[F.cause];
+    F.step = 3; setBar();
+    $('[data-p-step]').textContent = 'Pasul 3 din 3';
+    pFoot.hidden = true;
+    pBody.innerHTML = `
+      <div><h2 id="pay-title">Se blochează banii</h2><p class="lead">Creăm plata condiționată în portofelul tău de euro digital.</p></div>
+      <div class="walletapp">
+        <div style="display:flex;justify-content:space-between;align-items:center"><span class="label">Portofel euro digital · Andrei M.</span><span class="label">Simulare</span></div>
+        <div><span class="label">Plată condiționată</span><div class="big">${eur(amountEur())}</div></div>
+        <dl><dt>Către</dt><dd>${c.ngo}</dd><dt>Se eliberează</dt><dd>la confirmarea livrării</dd><dt>Expiră</dt><dd>${deadlineTxt(c)}, apoi retur</dd></dl>
+        <div class="auth" data-auth>
+          <span class="spin" aria-hidden="true"></span>
+          <span class="label" aria-live="polite">Se trimite la portofel…</span>
+        </div>
+      </div>`;
+    await wait(1100);
+    $('[data-auth]', pBody).innerHTML = `
+      <div class="lockwrap" data-lock><svg viewBox="0 0 110 130" aria-hidden="true">
+        <path class="shackle" d="M30 58V40a25 25 0 0 1 50 0v18" fill="none" stroke="var(--deep-ink)" stroke-width="9" stroke-linecap="round"/>
+        <rect x="14" y="56" width="82" height="68" rx="10" fill="var(--gold)"/>
+        <g class="dropcoin"><circle cx="55" cy="88" r="16" fill="#003399"/><text x="55" y="95" text-anchor="middle" fill="var(--gold)" style="font:700 18px var(--display)">€</text></g>
+      </svg></div>
+      <span class="label" aria-live="polite">Bani blocați pentru cauză</span>`;
+    await wait(60);
+    $('[data-lock]', pBody).classList.add('shut');
+    await wait(1300);
+    commit();
+    busy = false;
+  }
+
+  function commit() {
+    const c = byId[F.cause], e = amountEur(), before = pct(c.id), wasNew = !S.donations.some(d => d.cause === c.id);
+    S.wallet.available = round2(S.wallet.available - e);
+    S.wallet.locked = round2(S.wallet.locked + e);
+    S.funded[c.id] = round2(S.funded[c.id] + e);
+    S.donors[c.id] += 1;
+    const now = new Date().toISOString();
+    const closed = S.funded[c.id] >= c.target;
+    const d = { id: 'd' + Date.now(), cause: c.id, eur: e, left: F.left, stage: closed ? 1 : 0, dates: closed ? [now, now] : [now], fresh: true };
+    S.donations.unshift(d);
+    const pts = (closed ? 10 : 0) + Math.round(Math.sqrt(e)) + (wasNew ? 3 : 0);
+    S.points += pts;
+    save();
+    renderWallet(); renderCauses(); renderDonations();
+    thanks(c, e, before, pct(c.id), closed, pts, wasNew);
+  }
+
+  function thanks(c, e, before, after, closed, pts, wasNew) {
+    F.step = 4; $$('.stepbar i').forEach(b => b.classList.add('on'));
+    $('[data-p-step]').textContent = 'Donație blocată';
+    pFoot.hidden = true;
+    const badges = [`<span class="new">+${pts} puncte de impact</span>`];
+    if (closed) badges.push('<span class="new">Insignă nouă: Ai completat o nevoie</span>');
+    if (wasNew) badges.push('<span>Cauză nouă susținută</span>');
+    pBody.innerHTML = `
+      <div class="confetti" data-confetti aria-hidden="true"></div>
+      <div class="thanks" style="display:grid;gap:1.1rem">
+        <div class="seal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+        <h2 id="pay-title">Mulțumim, Andrei!</h2>
+        <p class="impact">Cei <span class="mono">${eur(e)}</span> ai tăi înseamnă ${equivText(c, e)}.</p>
+        ${closed ? '<p class="closed">Ai completat nevoia! Cauza e finanțată, iar ONG-ul alege acum compania care cumpără produsele.</p>' : ''}
+        <div class="progress-ba">
+          <div class="row"><strong>${c.title}</strong><span class="mono">${before}% → <span style="color:var(--accent)">${after}%</span></span></div>
+          <div class="meter ba"><i style="width:${before}%"></i><b data-ba style="width:0%"></b></div>
+          <div class="row muted"><span>${eur(S.funded[c.id], 0)} din ${eur(c.target, 0)}</span><span>${S.donors[c.id]} donatori</span></div>
+        </div>
+        <div class="earned">${badges.join('')}</div>
+        <p class="note">Banii stau blocați în portofelul tău. Te anunțăm la fiecare pas, până la chitanța de impact.</p>
+        <div style="display:grid;gap:.6rem;width:100%">
+          <button class="btn btn--main" type="button" data-go-don>Vezi donațiile mele</button>
+          <button class="btn btn--ghost" type="button" data-go-causes>Înapoi la cauze</button>
+        </div>
+      </div>`;
+    requestAnimationFrame(() => requestAnimationFrame(() => { const b = $('[data-ba]', pBody); if (b) b.style.width = Math.max(0, after - before) + '%'; }));
+    confetti($('[data-confetti]', pBody));
+    $('[data-go-don]', pBody).addEventListener('click', () => { pay.close(); location.hash = '#donatii'; });
+    $('[data-go-causes]', pBody).addEventListener('click', () => { pay.close(); location.hash = '#cauze'; });
+    $('[data-go-don]', pBody).focus();
+  }
+
+  function confetti(box) {
+    if (reduce.matches || !box) return;
+    const colors = ['var(--accent)', 'var(--gold)', '#003399', 'var(--accent-soft)'];
+    let html = '';
+    for (let i = 0; i < 46; i++) {
+      const coin = i % 6 === 0;
+      const st = `left:${Math.random() * 100}%;--x:${(Math.random() * 120 - 60).toFixed(0)}px;--r:${(Math.random() * 720 - 360).toFixed(0)}deg;--t:${(1.6 + Math.random() * 1.4).toFixed(2)}s;--dl:${(Math.random() * .5).toFixed(2)}s;${coin ? '' : 'background:' + colors[i % colors.length]}`;
+      html += coin ? `<i class="c" style="${st}">€</i>` : `<i style="${st}"></i>`;
+    }
+    box.innerHTML = html;
+    setTimeout(() => { box.innerHTML = ''; }, 3600);
+  }
+
+  /* ---------- donațiile mele ---------- */
+  const dlist = $('[data-dlist]'), statsEl = $('[data-stats]');
+  const open = new Set();
+  function statusPill(d) {
+    if (d.stage >= 5) return '<span class="pill ok">Chitanță primită</span>';
+    if (d.stage >= 4) return '<span class="pill ok">Plată eliberată</span>';
+    if (d.stage >= 1) return `<span class="pill hold">${STAGES[d.stage][0]}</span>`;
+    return '<span class="pill hold">🔒 Bani blocați</span>';
+  }
+  function renderDonations() {
+    const total = S.donations.reduce((s, d) => s + d.eur, 0);
+    const causes = new Set(S.donations.map(d => d.cause)).size;
+    const receipts = S.donations.filter(d => d.stage >= 5).length;
+    statsEl.innerHTML = `
+      <div class="card stat"><span class="label">Ai donat</span><span class="mono">${eur(total)}</span></div>
+      <div class="card stat"><span class="label">Cauze susținute</span><span class="mono">${causes}</span></div>
+      <div class="card stat"><span class="label">Chitanțe primite</span><span class="mono">${receipts}</span></div>
+      <div class="card stat"><span class="label">Puncte de impact</span><span class="mono">${S.points} p</span></div>`;
+    if (!S.donations.length) { dlist.innerHTML = '<li class="card empty">Încă nu ai donat. <a href="#cauze">Alege o cauză</a>.</li>'; return; }
+    dlist.innerHTML = S.donations.map(d => {
+      const c = byId[d.cause], isOpen = open.has(d.id) || d.fresh;
+      const steps = STAGES.map(([t, s], i) => {
+        const cls = i < d.stage || (i === d.stage && d.stage === 5) ? 'done' : i === d.stage ? 'now' : 'todo';
+        const dot = cls === 'done' ? '<span class="dot">✓</span>' : cls === 'now' ? '<span class="dot wait">•</span>' : `<span class="dot todo">${i + 1}</span>`;
+        const date = d.dates[i] ? fmtDate(d.dates[i]) : cls === 'now' ? 'acum' : '';
+        return `<li class="${cls === 'done' ? 'done' : cls}">${dot}<span class="t"><strong>${t}</strong><span>${s}</span></span><span class="d">${date}</span></li>`;
+      }).join('');
+      return `<li class="card don${d.fresh ? ' fresh' : ''}">
+        <div class="don-head">
+          <div><h3>${c.title}</h3><p class="sub">${c.ngo} · ${fmtDate(d.dates[0])}</p></div>
+          <div style="display:grid;gap:.4rem;justify-items:end"><span class="amt">${eur(d.eur)}</span>${statusPill(d)}</div>
+        </div>
+        <button class="btn btn--quiet don-toggle" type="button" data-toggle="${d.id}" aria-expanded="${isOpen}">${isOpen ? 'Ascunde progresul' : 'Vezi progresul'}</button>
+        <div ${isOpen ? '' : 'hidden'} style="display:grid;gap:1rem">
+          <ol class="timeline">${steps}</ol>
+          <div class="don-actions">
+            ${d.stage >= 5 ? `<button class="btn btn--main btn--sm" type="button" data-receipt="${d.id}">Vezi chitanța</button>` : `<button class="btn btn--ghost btn--sm" type="button" data-advance="${d.id}">Demo: pasul următor</button>`}
+          </div>
+        </div>
+      </li>`;
+    }).join('');
+    if (!$('#view-donatii').hidden) { S.donations.forEach(d => { if (d.fresh) { open.add(d.id); delete d.fresh; } }); save(); }
+  }
+  dlist.addEventListener('click', e => {
+    const t = e.target.closest('[data-toggle]'), a = e.target.closest('[data-advance]'), r = e.target.closest('[data-receipt]');
+    if (t) { const id = t.dataset.toggle; open.has(id) ? open.delete(id) : open.add(id); renderDonations(); }
+    if (a) advance(a.dataset.advance);
+    if (r) showReceipt(r.dataset.receipt);
+  });
+  function advance(id) {
+    const d = S.donations.find(x => x.id === id); if (!d || d.stage >= 5) return;
+    d.stage++; d.dates[d.stage] = new Date().toISOString();
+    if (d.stage === 4) {
+      // plata se eliberează: banii pleacă din portofel; restul merge unde a ales donatorul
+      const c = byId[d.cause], paid = round2(d.eur * 0.9), rest = round2(d.eur - paid);
+      d.receipt = { items: Math.floor(paid / (c.unit * 0.9) + 1e-9), paid, rest };
+      S.wallet.locked = round2(S.wallet.locked - d.eur);
+      if (d.left === 'retur') S.wallet.available = round2(S.wallet.available + rest);
+    }
+    open.add(id); save(); renderWallet(); renderDonations();
+  }
+
+  /* ---------- chitanța ---------- */
+  const rcDlg = $('#receipt');
+  function showReceipt(id) {
+    const d = S.donations.find(x => x.id === id), c = byId[d.cause], r = d.receipt;
+    const what = r.items >= 1 ? qty(r.items, c.one, c.many) : c.part;
+    $('[data-rc]').innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:start;gap:1rem">
+        <div><span class="label">Chitanță de impact</span><h2 id="rc-title" style="margin-top:.3rem">${c.title}</h2><p class="muted" style="font-size:.92rem">${c.ngo}</p></div>
+        <button class="x" type="button" data-rc-close aria-label="Închide">×</button>
+      </div>
+      <div>
+        <div class="rc-row"><span>Donația ta</span><span class="mono">${eur(d.eur)}</span></div>
+        <div class="rc-row"><span>${what}, de la ${c.supplier}</span><span class="mono">${eur(r.paid)}</span></div>
+        <div class="rc-row"><span>Rest, ${d.left === 'retur' ? 'întors în portofelul tău' : 'rămas la aceeași cauză'}</span><span class="mono">${eur(r.rest)}</span></div>
+      </div>
+      <div class="photos" aria-label="Poze de la livrare, confirmate de ONG">
+        ${[1, 2, 3].map(() => '<figure><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><circle cx="12" cy="13.5" r="3.5"/><path d="M9 7l1-2h4l1 2"/></svg><figcaption>✓ Verificat</figcaption></figure>').join('')}
+      </div>
+      <div><span class="label">Traseul banilor</span>
+        <ol class="timeline" style="margin-top:.75rem">${STAGES.map(([t], i) => `<li class="done"><span class="dot">✓</span><span class="t"><strong>${t}</strong></span><span class="d">${fmtDate(d.dates[i])}</span></li>`).join('')}</ol>
+      </div>
+      <p class="note">Factura e emisă pe numele ONG-ului. Sumele și pozele sunt simulate în prototip.</p>`;
+    $('[data-rc-close]').addEventListener('click', () => rcDlg.close());
+    rcDlg.showModal();
+  }
+  rcDlg.addEventListener('click', e => { if (e.target === rcDlg) rcDlg.close(); });
+
+  /* ---------- navigare ---------- */
+  function route() {
+    const v = location.hash === '#donatii' ? 'donatii' : 'cauze';
+    $('#view-cauze').hidden = v !== 'cauze';
+    $('#view-donatii').hidden = v !== 'donatii';
+    $$('[data-tab]').forEach(a => a.dataset.tab === v ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'));
+    if (v === 'donatii') renderDonations();
+    scrollTo({ top: 0 });
+  }
+  addEventListener('hashchange', route);
+
+  $('[data-reset]').addEventListener('click', () => {
+    S = seed(); open.clear(); save(); renderWallet(); renderChips(); renderCauses(); renderDonations();
+    location.hash = '#cauze';
+  });
+
+  renderWallet(); renderChips(); renderCauses(); renderDonations(); route();
+})();
+</script>
+</body>
+</html>
