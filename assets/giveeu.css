@@ -728,8 +728,16 @@ dialog.receipt[open],dialog.win[open],dialog.explain[open]{animation:popin .35s 
 .auth{display:grid;justify-items:center;gap:.875rem;padding-block:.5rem;text-align:center}
 .lockwrap{display:grid;place-items:center;height:9rem;position:relative}
 .lockwrap svg{width:110px;height:130px;overflow:visible}
-.lockwrap .shackle{transform:translateY(-16px);transition:transform .45s cubic-bezier(.5,1.6,.5,1) .45s}
-.lockwrap.shut .shackle{transform:none}
+/* lacătul se închide ca unul adevărat: toarta pleacă deschisă spre dreapta, se rotește în jurul piciorului
+   drept (care rămâne în corp), vine de la dreapta spre stânga și apoi coboară în lăcaș */
+.lockwrap .shackle{transform-box:view-box;transform-origin:80px 0;transform:translateY(-14px) scaleX(-1)}
+.lockwrap.shut .shackle{animation:shackle-shut .85s .42s forwards}
+@keyframes shackle-shut{
+  0%{transform:translateY(-14px) scaleX(-1);animation-timing-function:cubic-bezier(.45,0,.25,1)}
+  62%{transform:translateY(-14px) scaleX(1);animation-timing-function:cubic-bezier(.5,0,.75,0)}
+  84%{transform:translateY(1.5px) scaleX(1);animation-timing-function:ease-out}
+  100%{transform:translateY(0) scaleX(1)}
+}
 .lockwrap .dropcoin{transform:translateY(-70px);opacity:0;transition:transform .45s cubic-bezier(.4,0,.6,1),opacity .2s}
 .lockwrap.shut .dropcoin{transform:translateY(0);opacity:1}
 .thanks{text-align:center;justify-items:center}

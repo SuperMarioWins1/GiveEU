@@ -86,7 +86,6 @@
   <div class="wrap">
     <div class="brand">
       <a class="logo" href="index.html" aria-label="GiveEU, pagina de prezentare"><svg class="mark" aria-hidden="true"><use href="#i-mark"/></svg><span>GiveEU</span></a>
-      <p>Prototip pentru hackathonul Pixel 5.0, noiembrie 2026. Euro digital, plățile, numele și sumele sunt simulate. Nu e un serviciu oficial al Uniunii Europene.</p>
     </div>
     <div class="links">
       <a class="btn btn--ghost btn--sm" href="suppliers.html">Portal furnizori</a>
@@ -338,14 +337,15 @@
     await wait(1100);
     $('[data-auth]', pBody).innerHTML = `
       <div class="lockwrap" data-lock><svg viewBox="0 0 110 130" aria-hidden="true">
-        <path class="shackle" d="M30 58V40a25 25 0 0 1 50 0v18" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round"/>
+        <defs><clipPath id="lk-clip"><rect x="-60" y="-60" width="240" height="116"/></clipPath></defs>
+        <g clip-path="url(#lk-clip)"><path class="shackle" d="M30 58V40a25 25 0 0 1 50 0v32" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round"/></g>
         <rect x="14" y="56" width="82" height="68" rx="18" fill="rgba(255,255,255,.14)" stroke="rgba(255,255,255,.55)" stroke-width="1.5"/>
         <g class="dropcoin"><circle cx="55" cy="90" r="15" fill="var(--sun)"/><text x="55" y="96.5" text-anchor="middle" fill="#0b1140" style="font:600 17px var(--font)">€</text></g>
       </svg></div>
       <span class="label" aria-live="polite">Bani blocați pentru cauză</span>`;
     await wait(60);
     $('[data-lock]', pBody).classList.add('shut');
-    await wait(1300);
+    await wait(1500);
     commit();
     busy = false;
   }
