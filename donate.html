@@ -226,7 +226,7 @@ dialog::backdrop{background:color-mix(in srgb,#0b1a3a 45%,transparent);backdrop-
 .don-actions{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
 .empty{padding:2rem;text-align:center;color:var(--muted)}
 
-/* chitanța */
+/* raportul de impact */
 dialog.receipt{border:0;padding:0;border-radius:8px;border-top:4px solid var(--accent);width:min(30rem,calc(100% - 32px));max-height:calc(100% - 32px);background:var(--surface);color:var(--ink)}
 dialog.receipt[open]{animation:popin .35s cubic-bezier(.3,1.3,.5,1)}
 .rc{padding:1.5rem;display:grid;gap:1rem}
@@ -363,7 +363,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:.75rem 2rem;justify-content:space-b
     ['Companie aleasă de ONG', 'ONG-ul a ales cine cumpără și livrează'],
     ['Livrare confirmată', 'ONG-ul a primit produsele și a încărcat poze'],
     ['Plată eliberată', 'Abia acum banii au plecat din portofelul tău'],
-    ['Chitanță de impact', 'Ce s-a cumpărat, de la cine și cu cât']
+    ['Raport de impact', 'Ce s-a cumpărat, de la cine și cu cât']
   ];
   const LIMIT = 3000;
 
@@ -594,7 +594,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:.75rem 2rem;justify-content:space-b
           <div class="row muted"><span>${eur(S.funded[c.id], 0)} din ${eur(c.target, 0)}</span><span>${S.donors[c.id]} donatori</span></div>
         </div>
         <div class="earned">${badges.join('')}</div>
-        <p class="note">Banii stau blocați în portofelul tău. Te anunțăm la fiecare pas, până la chitanța de impact.</p>
+        <p class="note">Banii stau blocați în portofelul tău. Te anunțăm la fiecare pas, până la raportul de impact.</p>
         <div style="display:grid;gap:.6rem;width:100%">
           <button class="btn btn--main" type="button" data-go-don>Vezi donațiile mele</button>
           <button class="btn btn--ghost" type="button" data-go-causes>Înapoi la cauze</button>
@@ -624,7 +624,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:.75rem 2rem;justify-content:space-b
   const dlist = $('[data-dlist]'), statsEl = $('[data-stats]');
   const open = new Set();
   function statusPill(d) {
-    if (d.stage >= 5) return '<span class="pill ok">Chitanță primită</span>';
+    if (d.stage >= 5) return '<span class="pill ok">Raport primit</span>';
     if (d.stage >= 4) return '<span class="pill ok">Plată eliberată</span>';
     if (d.stage >= 1) return `<span class="pill hold">${STAGES[d.stage][0]}</span>`;
     return '<span class="pill hold">🔒 Bani blocați</span>';
@@ -636,7 +636,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:.75rem 2rem;justify-content:space-b
     statsEl.innerHTML = `
       <div class="card stat"><span class="label">Ai donat</span><span class="mono">${eur(total)}</span></div>
       <div class="card stat"><span class="label">Cauze susținute</span><span class="mono">${causes}</span></div>
-      <div class="card stat"><span class="label">Chitanțe primite</span><span class="mono">${receipts}</span></div>
+      <div class="card stat"><span class="label">Rapoarte primite</span><span class="mono">${receipts}</span></div>
       <div class="card stat"><span class="label">Puncte de impact</span><span class="mono">${S.points} p</span></div>`;
     if (!S.donations.length) { dlist.innerHTML = '<li class="card empty">Încă nu ai donat. <a href="#cauze">Alege o cauză</a>.</li>'; return; }
     dlist.innerHTML = S.donations.map(d => {
@@ -656,7 +656,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:.75rem 2rem;justify-content:space-b
         <div ${isOpen ? '' : 'hidden'} style="display:grid;gap:1rem">
           <ol class="timeline">${steps}</ol>
           <div class="don-actions">
-            ${d.stage >= 5 ? `<button class="btn btn--main btn--sm" type="button" data-receipt="${d.id}">Vezi chitanța</button>` : `<button class="btn btn--ghost btn--sm" type="button" data-advance="${d.id}">Demo: pasul următor</button>`}
+            ${d.stage >= 5 ? `<button class="btn btn--main btn--sm" type="button" data-receipt="${d.id}">Vezi raportul</button>` : `<button class="btn btn--ghost btn--sm" type="button" data-advance="${d.id}">Demo: pasul următor</button>`}
           </div>
         </div>
       </li>`;
@@ -682,14 +682,14 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:.75rem 2rem;justify-content:space-b
     open.add(id); save(); renderWallet(); renderDonations();
   }
 
-  /* ---------- chitanța ---------- */
+  /* ---------- raportul de impact ---------- */
   const rcDlg = $('#receipt');
   function showReceipt(id) {
     const d = S.donations.find(x => x.id === id), c = byId[d.cause], r = d.receipt;
     const what = r.items >= 1 ? qty(r.items, c.one, c.many) : c.part;
     $('[data-rc]').innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:start;gap:1rem">
-        <div><span class="label">Chitanță de impact</span><h2 id="rc-title" style="margin-top:.3rem">${c.title}</h2><p class="muted" style="font-size:.92rem">${c.ngo}</p></div>
+        <div><span class="label">Raport de impact</span><h2 id="rc-title" style="margin-top:.3rem">${c.title}</h2><p class="muted" style="font-size:.92rem">${c.ngo}</p></div>
         <button class="x" type="button" data-rc-close aria-label="Închide">×</button>
       </div>
       <div>
