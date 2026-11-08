@@ -125,8 +125,68 @@
     <div><span class="eyebrow">Între timp, la licitație</span><h2 id="ex-title" style="margin-top:.6rem">Cum alege AI-ul oferta câștigătoare</h2><p>Analizează toate ofertele, nu doar prețul. ONG-ul aprobă alegerea.</p></div>
     <button class="x" type="button" data-ex-close aria-label="Închide"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
   </div>
-  <img class="ex-img" data-ex-img alt="Animație: AI-ul GiveEU primește ofertele furnizorilor pentru 100 de ciocolate, cu un buget de 200 €, și le compară după preț, valabilitate și distanță." width="960" height="540">
-  <div class="ex-foot"><button class="btn btn--main" type="button" data-ex-go>Continuă: peste 3 zile →</button></div>
+  <div class="ai-demo" data-ai>
+    <div class="ai-grid">
+      <div class="ai-left">
+        <div class="ai-need"><span class="label">Nevoia ONG-ului</span><b>100 de ciocolate pentru pachete de Crăciun</b><span class="ai-facts"><span class="pill mid">Buget <span class="mono">200&nbsp;€</span></span><span class="pill mid">Distribuire pe 20 decembrie</span></span></div>
+        <ol class="ai-offers" aria-label="Ofertele primite">
+        <li class="ai-offer" data-o><div class="ai-o-top"><b>Magazin local</b><span class="ai-price mono">170&nbsp;€</span></div><div class="ai-o-bot"><span class="ai-meta">la 8 km · livrare 15 dec · valabil până în martie</span><span class="pill" data-tag></span></div></li>
+        <li class="ai-offer" data-o><div class="ai-o-top"><b>Lanț național</b><span class="ai-price mono">180&nbsp;€</span></div><div class="ai-o-bot"><span class="ai-meta">la 320 km · livrare 18 dec · valabil până în aprilie</span><span class="pill" data-tag></span></div></li>
+        <li class="ai-offer" data-o><div class="ai-o-top"><b>Distribuitor</b><span class="ai-price mono">155&nbsp;€</span></div><div class="ai-o-bot"><span class="ai-meta">la 140 km · livrare 12 dec · expiră pe 10 dec</span><span class="pill" data-tag></span></div></li>
+      </ol>
+      </div>
+      <div class="panel ai-panel">
+        <div class="ai-steps" role="group" aria-label="Pașii AI-ului">
+          <button type="button" data-step="1"><span class="sr-only">Pasul </span>1 · Condiții</button>
+          <button type="button" data-step="2"><span class="sr-only">Pasul </span>2 · Scor</button>
+          <button type="button" data-step="3"><span class="sr-only">Pasul </span>3 · Alegere</button>
+        </div>
+        <div class="ai-views">
+          <section class="ai-view" data-view="0" aria-labelledby="ai-v0">
+            <span class="label">AI-ul GiveEU</span>
+            <h3 id="ai-v0">Primesc ofertele</h3>
+            <p>Furnizorii răspund prin agenții lor AI. Analizez toate ofertele, nu doar prețul.</p>
+            <p class="ai-count"><span class="label">Oferte primite</span><b class="mono" data-count>0</b></p>
+          </section>
+          <section class="ai-view" data-view="1" aria-labelledby="ai-v1">
+            <span class="label">Pasul 1 din 3</span>
+            <h3 id="ai-v1">Verific condițiile</h3>
+            <ul class="ai-check">
+              <li style="--i:0"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Livrare înainte de 20 decembrie</span></li>
+              <li style="--i:1"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Produse valabile la distribuire</span></li>
+              <li style="--i:2"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Furnizor verificat</span></li>
+              <li style="--i:3"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Încape în bugetul de 200&nbsp;€</span></li>
+            </ul>
+            <p class="ai-elim" data-elim><span class="pill no">1 ofertă eliminată</span></p>
+          </section>
+          <section class="ai-view" data-view="2" aria-labelledby="ai-v2">
+            <span class="label">Pasul 2 din 3</span>
+            <h3 id="ai-v2">Dau un scor</h3>
+            <ul class="ai-w">
+              <li style="--i:0;--w:100%"><span>Preț</span><span class="ai-bar"><i></i></span><span class="pct mono">50%</span></li>
+              <li style="--i:1;--w:40%"><span>Valabilitate</span><span class="ai-bar"><i></i></span><span class="pct mono">20%</span></li>
+              <li style="--i:2;--w:30%"><span>Distanță</span><span class="ai-bar"><i></i></span><span class="pct mono">15%</span></li>
+              <li style="--i:3;--w:30%"><span>Reducere socială</span><span class="ai-bar"><i></i></span><span class="pct mono">15%</span></li>
+            </ul>
+            <span class="label">Scor final</span>
+            <ul class="ai-final">
+              <li style="--i:5;--w:86%"><span>Magazin local</span><b class="mono">86</b><span class="ai-bar"><i></i></span></li>
+              <li class="alt" style="--i:6;--w:71%"><span>Lanț național</span><b class="mono">71</b><span class="ai-bar"><i></i></span></li>
+            </ul>
+          </section>
+          <section class="ai-view" data-view="3" aria-labelledby="ai-v3">
+            <span class="label">Pasul 3 din 3</span>
+            <h3 id="ai-v3">Aleg și explic</h3>
+            <p class="ai-why">Aleg <b>Magazin local, 170&nbsp;€</b>. E cu 10&nbsp;€ mai ieftin decât lanțul național, e la 8&nbsp;km și vinde cu 19% sub prețul obișnuit. Cea mai ieftină ofertă, de 155&nbsp;€, expiră pe 10 decembrie, înainte de distribuire.</p>
+            <p class="ai-send" data-send><span class="spin" aria-hidden="true"></span><svg class="ok-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-send-t>Trimit recomandarea la ONG…</span></p>
+            <p class="ai-note">Banii pleacă la furnizor doar după livrare.</p>
+          </section>
+        </div>
+      </div>
+    </div>
+    <p class="sr-only" aria-live="polite" data-ai-live></p>
+  </div>
+  <div class="ex-foot"><button class="btn btn--ghost btn--sm" type="button" data-ai-play>Pauză</button><button class="btn btn--main" type="button" data-ex-go>Continuă: peste 3 zile →</button></div>
 </dialog>
 
 <div class="toast" data-toast role="status" hidden></div>
@@ -417,18 +477,93 @@
     }
   }
   // „Peste 3 zile”: întâi arătăm cum alege AI-ul oferta, iar avansul se face când se închide fereastra
-  const explain = $('#explain'), exImg = $('[data-ex-img]');
+  const explain = $('#explain');
   let skipPending = false;
+
+  // demonstrația „Cum alege AI-ul”: rulează pe pași, se poate pune pe pauză și se poate sări direct la un pas
+  const aiDemo = (() => {
+    const root = $('[data-ai]'), btn = $('[data-ai-play]'), live = $('[data-ai-live]', root);
+    const dlg = root.closest('dialog');
+    const offers = $$('[data-o]', root), tags = offers.map(o => $('[data-tag]', o));
+    const views = $$('[data-view]', root), steps = $$('[data-step]', root);
+    const count = $('[data-count]', root), elim = $('[data-elim]', root), send = $('[data-send]', root), sendT = $('[data-send-t]', root);
+    const tag = (i, text, kind) => { tags[i].textContent = text; tags[i].className = 'pill ' + kind; };
+    const say = t => { live.textContent = t; };
+    const view = n => {
+      views.forEach(v => v.classList.toggle('on', +v.dataset.view === n));
+      steps.forEach(b => {
+        const k = +b.dataset.step;
+        b.classList.toggle('done', k < n);
+        if (k === n) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+      });
+    };
+    const arrive = i => { offers[i].classList.add('in'); count.textContent = i + 1; };
+    const EV = [
+      [0, () => { view(0); say('AI-ul primește ofertele furnizorilor.'); }],
+      [500, () => arrive(0)], [1100, () => arrive(1)], [1700, () => arrive(2)],
+      [2800, () => { view(1); say('Pasul 1 din 3: verific condițiile.'); }],
+      [4100, () => tag(0, 'Trece', 'ok')],
+      [4500, () => tag(1, 'Trece', 'ok')],
+      [4900, () => { tag(2, 'Expiră prea devreme', 'no'); offers[2].classList.add('out'); }],
+      [5300, () => { elim.classList.add('on'); say('O ofertă eliminată: distribuitorul, ale cărui produse expiră înainte de distribuire.'); }],
+      [6600, () => { view(2); say('Pasul 2 din 3: dau un scor. Magazin local 86, lanț național 71.'); }],
+      [8300, () => { tag(0, 'Scor 86', 'ok'); tag(1, 'Scor 71', 'mid'); }],
+      [9800, () => { view(3); offers[0].classList.add('win'); tag(0, 'Câștigătoare', 'won'); say('Pasul 3 din 3: aleg Magazin local și explic de ce.'); }],
+      [12300, () => { send.dataset.state = 'ok'; sendT.textContent = 'ONG-ul a aprobat alegerea'; say('ONG-ul a aprobat alegerea.'); }],
+    ];
+    const END = { 1: 8, 2: 10, 3: 12 }; // ultimul eveniment al fiecărui pas
+    let timers = [], idx = 0, elapsed = 0, t0 = 0, playing = false;
+    const label = () => { btn.textContent = idx >= EV.length ? 'Reia' : playing ? 'Pauză' : 'Pornește'; };
+    const clear = () => { timers.forEach(clearTimeout); timers = []; };
+    const instantly = fn => { root.classList.add('instant'); fn(); void root.offsetWidth; root.classList.remove('instant'); };
+    function reset() {
+      clear(); playing = false; idx = 0; elapsed = 0;
+      instantly(() => {
+        offers.forEach(o => o.classList.remove('in', 'out', 'win'));
+        tags.forEach(t => { t.textContent = ''; t.className = 'pill'; });
+        count.textContent = '0';
+        elim.classList.remove('on');
+        send.removeAttribute('data-state');
+        sendT.textContent = 'Trimit recomandarea la ONG…';
+        view(-1);
+      });
+    }
+    function play() {
+      if (idx >= EV.length) reset();
+      playing = true; t0 = performance.now() - elapsed;
+      for (let k = idx; k < EV.length; k++) {
+        timers.push(setTimeout(() => {
+          if (!dlg.open) { clear(); playing = false; return; } // fereastra s-a închis: animația se oprește
+          idx = k + 1; EV[k][1]();
+          if (idx >= EV.length) { playing = false; label(); }
+        }, Math.max(0, EV[k][0] - elapsed)));
+      }
+      label();
+    }
+    function pause() { clear(); playing = false; elapsed = performance.now() - t0; label(); }
+    function jump(n) { // arată direct sfârșitul pasului n, fără animație
+      reset();
+      instantly(() => { for (let k = 0; k <= END[n]; k++) EV[k][1](); });
+      idx = END[n] + 1; elapsed = EV[END[n]][0]; label();
+    }
+    btn.addEventListener('click', () => (playing ? pause() : play()));
+    steps.forEach(b => b.addEventListener('click', () => jump(+b.dataset.step)));
+    return {
+      start() { reset(); if (reduce.matches) jump(3); else play(); },
+      stop() { clear(); playing = false; },
+    };
+  })();
+
   $('[data-skip]').addEventListener('click', () => {
     skipPending = true;
-    exImg.src = 'assets/ai-licitatie.gif?t=' + Date.now(); // reîncepe animația de fiecare dată
     explain.showModal();
+    aiDemo.start();
   });
   $('[data-ex-close]').addEventListener('click', () => explain.close());
   $('[data-ex-go]').addEventListener('click', () => explain.close());
   explain.addEventListener('click', e => { if (e.target === explain) explain.close(); });
   explain.addEventListener('close', () => {
-    exImg.removeAttribute('src');
+    aiDemo.stop();
     if (skipPending) { skipPending = false; skipDays(); }
   });
 

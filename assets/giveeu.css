@@ -363,7 +363,7 @@ dialog.receipt[open],dialog.win[open],dialog.explain[open]{animation:popin .35s 
 }
 @media (forced-colors:active){
   .card,.panel,.btn,.pill,.appbar-in,.walletchip,.agree,.seg a[aria-current],.callout,.equiv,.wnext,.agent,.closed,.warn,.kind-hero,.mybid,dialog{border:1px solid CanvasText}
-  .meter i,.stepbar i.on,.dot,.steps li::before,.steps li::after,.seg-bar i,.seg-bar b,.plot .stack i,.plot .col::before,.board .bar,.chart-legend i,.o-sw{forced-color-adjust:none}
+  .meter i,.stepbar i.on,.dot,.steps li::before,.steps li::after,.seg-bar i,.seg-bar b,.plot .stack i,.plot .col::before,.board .bar,.chart-legend i,.o-sw,.ai-bar i{forced-color-adjust:none}
 }
 
 /* ==========================================================================
@@ -771,5 +771,70 @@ dialog.receipt[open],dialog.win[open],dialog.explain[open]{animation:popin .35s 
 dialog.explain{width:min(62rem,calc(100% - 2rem));overflow:auto}
 .ex-head{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;padding:1.5rem 1.5rem 1rem}
 .ex-head p{color:var(--ink-2);font-size:.9375rem;margin-top:.375rem}
-.ex-img{display:block;width:100%;height:auto;aspect-ratio:16/9;background:var(--bg);border-block:1px solid var(--line)}
+/* demonstrația „Cum alege AI-ul oferta”: ofertele în carduri, AI-ul pe panoul albastru */
+.ai-demo{display:grid;gap:1.125rem;padding:1.5rem;background:var(--bg);border-block:1px solid var(--line)}
+.ai-demo.instant,.ai-demo.instant *{transition:none!important}
+.ai-need{display:grid;gap:.375rem;justify-items:start}
+.ai-need b{font-weight:550;letter-spacing:-.015em}
+.ai-facts{display:flex;flex-wrap:wrap;gap:.375rem;margin-top:.125rem}
+.ai-left{display:grid;gap:1rem;align-content:start}
+.ai-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:1rem;align-items:start}
+@media (max-width:760px){.ai-grid{grid-template-columns:minmax(0,1fr)}}
+.ai-offers{display:grid;gap:.625rem}
+.ai-offer{display:grid;gap:.5rem;padding:.875rem 1rem;border-radius:var(--r-md);background:var(--surface);border:1px solid var(--line);box-shadow:var(--sh-card);opacity:0;transform:translateY(10px);
+  transition:opacity .4s var(--ease),transform .4s var(--ease),background-color .35s,border-color .35s,box-shadow .35s}
+.ai-offer.in{opacity:1;transform:none}
+.ai-o-top,.ai-o-bot{display:flex;justify-content:space-between;align-items:center;gap:.75rem}
+.ai-o-top b{font-weight:550;letter-spacing:-.015em}
+.ai-price{font-size:1.375rem;line-height:1;font-weight:300;letter-spacing:-.04em;white-space:nowrap}
+.ai-meta{min-width:0;font-size:.8125rem;color:var(--ink-2)}
+.ai-offer .pill:empty{display:none}
+.ai-offer .pill{animation:popin .3s var(--ease)}
+.ai-offer.out{background:transparent;box-shadow:none;border-color:var(--line-2)}
+.ai-offer.out b{color:var(--ink-2)}
+.ai-offer.out .ai-price{color:var(--ink-2);text-decoration:line-through;text-decoration-thickness:1px}
+.ai-offer.win{background:var(--blue-50);border-color:var(--blue);box-shadow:0 0 0 1px var(--blue),var(--sh-card)}
+.pill.won{background:var(--blue);color:#fff;border-color:var(--blue)}
+.ai-panel{padding:1.25rem;display:grid;gap:1.25rem;border-radius:var(--r-lg)}
+.ai-steps{display:flex;gap:.375rem}
+.ai-steps button{flex:1;min-height:2.25rem;padding:0 .5rem;border-radius:999px;border:1px solid rgba(255,255,255,.26);background:rgba(255,255,255,.08);color:#fff;
+  font:550 .75rem/1 var(--font);white-space:nowrap;cursor:pointer;transition:background-color .25s,color .25s,border-color .25s}
+.ai-steps button:hover{background:rgba(255,255,255,.18)}
+.ai-steps button.done{background:rgba(255,255,255,.16)}
+.ai-steps button[aria-current]{background:#fff;color:var(--blue-ink);border-color:#fff}
+.ai-views{display:grid}
+.ai-view{grid-area:1/1;display:grid;gap:.75rem;align-content:start;opacity:0;visibility:hidden;transform:translateY(6px);
+  transition:opacity .3s var(--ease),transform .3s var(--ease),visibility 0s .3s}
+.ai-view.on{opacity:1;visibility:visible;transform:none;transition:opacity .35s var(--ease) .12s,transform .35s var(--ease) .12s,visibility 0s}
+.ai-view h3{font-size:1.5rem;line-height:1.15;font-weight:400;letter-spacing:-.035em}
+.ai-view p{font-size:.9375rem;color:var(--ink-2)}
+.ai-count{display:grid;gap:.25rem;margin-top:.75rem}
+.ai-count b{font-size:3rem;line-height:1;font-weight:300;letter-spacing:-.05em;color:#fff}
+.ai-check{display:grid;gap:.625rem}
+.ai-check li{display:flex;align-items:center;gap:.625rem;font-size:.9375rem;opacity:0;transform:translateX(-6px);
+  transition:opacity .3s var(--ease) calc(var(--i)*.22s + .2s),transform .3s var(--ease) calc(var(--i)*.22s + .2s)}
+.ai-view.on .ai-check li{opacity:1;transform:none}
+.ai-check svg{flex:none;width:1.25rem;height:1.25rem;padding:.25rem;border-radius:50%;background:rgba(255,255,255,.18);color:#fff}
+.ai-elim{opacity:0;transform:translateY(4px);transition:opacity .3s,transform .3s var(--ease)}
+.ai-elim.on{opacity:1;transform:none}
+.ai-w,.ai-final{display:grid;gap:.625rem}
+.ai-w li{display:grid;grid-template-columns:7.25rem minmax(0,1fr) 2.5rem;gap:.75rem;align-items:center;font-size:.8125rem}
+.ai-w .pct{text-align:right;color:var(--ink-2)}
+.ai-final li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.375rem .75rem;align-items:center;font-size:.875rem}
+.ai-final b{font-size:1rem;font-weight:550}
+.ai-final .ai-bar{grid-column:1/-1}
+.ai-bar{display:block;height:.375rem;border-radius:999px;background:rgba(255,255,255,.16);overflow:hidden}
+.ai-bar i{display:block;height:100%;width:0;border-radius:inherit;background:#fff;transition:width .8s var(--ease) calc(var(--i)*.12s + .25s)}
+.ai-view.on .ai-bar i{width:var(--w)}
+.ai-final .alt .ai-bar i{background:rgba(255,255,255,.55)}
+.ai-why{line-height:1.6}
+.ai-why b{font-weight:550;color:#fff}
+.ai-send{display:flex;align-items:center;justify-content:center;gap:.625rem;min-height:2.75rem;margin-top:.25rem;padding:0 1rem;border-radius:999px;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.26);color:#fff!important;font-weight:550;transition:background-color .3s,color .3s}
+.ai-send .ok-ic{display:none;width:1.125rem;height:1.125rem}
+.ai-send[data-state="ok"]{background:#fff;color:var(--blue-ink)!important;border-color:#fff}
+.ai-send[data-state="ok"] .spin{display:none}
+.ai-send[data-state="ok"] .ok-ic{display:block}
+.ai-note{font-size:.8125rem!important}
+.ex-foot:has([data-ai-play]){justify-content:space-between;align-items:center}
 .ex-foot{display:flex;justify-content:flex-end;gap:.75rem;padding:1rem 1.5rem}
